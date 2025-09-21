@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+assets/videos_no_version_control/*
+!assets/videos_no_version_control/.gitkeep
