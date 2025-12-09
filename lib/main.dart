@@ -96,6 +96,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
+                TextSpan(
+                  text: '4. dart:ffi 直接呼叫原生函式庫\n',
+                  children: [
+                    TextSpan(
+                      text: '       適用 C/C++ 或預先編譯的動態函式庫，走位元階層而非 Channels',
+                      style: TextStyle(fontSize: 25, color: Colors.grey.shade600),
+                    ),
+                  ],
+                ),
               ],
               transition: _defaultTransition,
               // https://docs.flutter.dev/platform-integration/platform-channels#overview
