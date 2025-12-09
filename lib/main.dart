@@ -9,6 +9,8 @@ import 'code/code.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // SlickSlides 同時會初始化 Highlighter (pkg: syntax_highlight)
   await SlickSlides.initialize();
 
   runApp(const MyApp());
@@ -72,7 +74,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
-                TextSpan(text: '2. Pigeon package'),
+                TextSpan(
+                  text: '2. Pigeon package\n',
+                  children: [
+                    TextSpan(
+                      text: '       (HostApi / EventChannelApi / FlutterApi / ProxyApi)',
+                      style: TextStyle(fontSize: 25, color: Colors.grey.shade600),
+                    ),
+                  ],
+                ),
                 TextSpan(
                   text: '3. JS interoperability or the package:web library',
                   children: [
@@ -423,28 +433,6 @@ class _MyHomePageState extends State<MyHomePage> {
               // //                     ),
               //                     fontSize: 36,
               //                   ),
-            ),
-            BulletsSlide.rich(
-              title: TextSpan(text: '可讀性'),
-              bullets: [
-                TextSpan(
-                  text:
-                      'Using this package eliminates the need to match strings between host and client for the names and data types of messages. '
-                      'It supports nested classes, grouping messages into APIs, generation of asynchronous wrapper code, and sending messages in either direction. '
-                      '',
-                  children: [
-                    TextSpan(
-                      text: 'The generated code is readable ',
-                      style: TextStyle(color: MyColors.highlight),
-                    ),
-                    TextSpan(
-                      text: 'and guarantees there are no conflicts between multiple clients of different versions.',
-                    ),
-                  ],
-                ),
-              ],
-              notes:
-                  '來自官方文件的敘述 (backup: pigeon_is_readable_by_doc.png link: https://docs.flutter.dev/platform-integration/platform-channels#pigeon)',
             ),
             BulletsSlide(title: '', bullets: [], notes: ''),
             BulletsSlide(title: '', bullets: [], notes: ''),

@@ -31,6 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  syntax_highlight: ^0.5.0
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -40,9 +42,11 @@ dev_dependencies:
     sdk: flutter
 
   slick_slides:
-    git:
-      url: https://github.com/wjprogramer/slick_slides
-      path: slick_slides
+   git:
+     url: https://github.com/wjprogramer/slick_slides
+     path: slick_slides
+     ref: 9a878f65c20035b7b01d3468c07ca2517ff9893f
+    # path: ../../flutter_my/slick_slides/slick_slides
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -46,3 +46,6 @@ app.*.map.json
 
 assets/videos_no_version_control/*
 !assets/videos_no_version_control/.gitkeep
+
+# FVM Version Cache
+.fvm/
