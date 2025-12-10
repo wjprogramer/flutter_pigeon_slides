@@ -439,6 +439,26 @@ class _AutoTestPageState extends State<AutoTestPage> {
     );
   }
 
+  Widget _legendM2F() {
+    Widget chip(Color c, String t) => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(width: 12, height: 12, color: c),
+            const SizedBox(width: 6),
+            Text(t),
+          ],
+        );
+    return Wrap(
+      spacing: 12,
+      runSpacing: 8,
+      children: [
+        chip(Colors.blue, 'MethodChannel EventChannel'),
+        chip(Colors.green, 'Pigeon EventChannelApi'),
+        chip(Colors.teal, 'Pigeon FlutterApi'),
+      ],
+    );
+  }
+
   Widget _summaryRow(String label, List<double> data) {
     final last = data.isNotEmpty ? data.last.toStringAsFixed(1) : '-';
     final avg =
@@ -480,14 +500,16 @@ class _AutoTestPageState extends State<AutoTestPage> {
               ],
             ),
             const SizedBox(height: 12),
-            _legend(),
-            const SizedBox(height: 12),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Text('Flutter → 原生'),
+                    const SizedBox(height: 8),
                     _chart(),
+                    const SizedBox(height: 8),
+                    _legend(),
                     const SizedBox(height: 12),
                     _summaryRow('MethodChannel', _mcSeries),
                     _summaryRow('Pigeon HostApi', _pigeonSeries),
@@ -497,8 +519,10 @@ class _AutoTestPageState extends State<AutoTestPage> {
                     const Divider(),
                     const SizedBox(height: 8),
                     const Text('原生 → Flutter'),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 12),
                     _chartNativeToFlutter(),
+                    const SizedBox(height: 8),
+                    _legendM2F(),
                     const SizedBox(height: 12),
                     _summaryRow('MethodChannel EventChannel', _m2fMethodSeries),
                     _summaryRow('Pigeon EventChannelApi', _m2fPigeonEventSeries),
