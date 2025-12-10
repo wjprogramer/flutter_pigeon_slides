@@ -502,7 +502,7 @@ packages:
     source: sdk
     version: "0.0.0"
   slick_slides:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       path: slick_slides
       ref: "9a878f65c20035b7b01d3468c07ca2517ff9893f"

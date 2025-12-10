@@ -61,3 +61,7 @@
 
 （後續可逐項展開）***
 
+## 決策與進度備註
+- FFI：採 C 實作放於 `macos/Runner/counter_ffi.c`，Dart 綁定 `lib/counter_ffi.dart`（DynamicLibrary.process）。
+- Demo/Perf 頁：`lib/pages/demo/demo_page.dart`，自 Menu 入口展示 MethodChannel / Pigeon / BasicMessageChannel / FFI 的 counter 操作與批次效能量測。
+

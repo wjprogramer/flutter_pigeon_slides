@@ -29,6 +29,8 @@
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
 		43F14F96072469C8A5811085 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5968FEBDE8C3B3E1DF721EF2 /* Pods_RunnerTests.framework */; };
 		96BEE942F98C4D94DCA15C54 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E1439904B9D513AC6C66434 /* Pods_Runner.framework */; };
+		A1F7C1A626C3D001AABBCCDD /* counter_ffi.c in Sources */ = {isa = PBXBuildFile; fileRef = A1F7C1A526C3D001AABBCCDD /* counter_ffi.c */; };
+		A1F7C1A826C3D0C3AABBCCDD /* PigeonCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F7C1A726C3D0C3AABBCCDD /* PigeonCounter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +90,8 @@
 		9A3E75E5FE026A989EF8E381 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		9E1439904B9D513AC6C66434 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0EE4388391DB20AECDC3594 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		A1F7C1A526C3D001AABBCCDD /* counter_ffi.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = counter_ffi.c; sourceTree = "<group>"; };
+		A1F7C1A726C3D0C3AABBCCDD /* PigeonCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PigeonCounter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +181,8 @@
 			children = (
 				33CC10F02044A3C60003C045 /* AppDelegate.swift */,
 				33CC11122044BFA00003C045 /* MainFlutterWindow.swift */,
+				A1F7C1A726C3D0C3AABBCCDD /* PigeonCounter.swift */,
+				A1F7C1A526C3D001AABBCCDD /* counter_ffi.c */,
 				33E51913231747F40026EE4D /* DebugProfile.entitlements */,
 				33E51914231749380026EE4D /* Release.entitlements */,
 				33CC11242044D66E0003C045 /* Resources */,
@@ -440,6 +446,8 @@
 				33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */,
 				33CC10F12044A3C60003C045 /* AppDelegate.swift in Sources */,
 				335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */,
+				A1F7C1A626C3D001AABBCCDD /* counter_ffi.c in Sources */,
+				A1F7C1A826C3D0C3AABBCCDD /* PigeonCounter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

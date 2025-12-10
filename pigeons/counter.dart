@@ -1,0 +1,29 @@
+import 'package:pigeon/pigeon.dart';
+
+@ConfigurePigeon(
+  PigeonOptions(
+    dartOut: 'lib/pigeons/counter.g.dart',
+    swiftOut: 'macos/Runner/PigeonCounter.swift',
+    swiftOptions: SwiftOptions(),
+    dartPackageName: 'flutter_pigeon_slides',
+  ),
+)
+class Counter {
+  Counter({
+    required this.value,
+    this.updatedAt,
+    this.source,
+  });
+
+  int value;
+  int? updatedAt;
+  String? source;
+}
+
+@HostApi()
+abstract class CounterHostApi {
+  Counter getCounter();
+  Counter increment(int delta);
+  void reset();
+}
+

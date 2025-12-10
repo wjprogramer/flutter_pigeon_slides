@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pigeon_slides/pages/api_doc/api_doc_page.dart';
+import 'package:flutter_pigeon_slides/pages/demo/demo_page.dart';
 import 'package:flutter_pigeon_slides/pages/performance_plan/performance_plan_page.dart';
 import 'package:flutter_pigeon_slides/pages/readable/readable_page.dart';
 
@@ -13,18 +14,15 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   final _controller = TextEditingController();
   final _allItems = <_Item>[
+    _Item(name: 'Demo / Perf', page: (_) => DemoPage(), tags: [const _Tag(name: 'new', color: Colors.green)]),
     _Item(name: 'Performance Plan', page: (_) => PerformancePlanPage()),
     _Item(name: '可讀性 Readable', page: (_) => ReadablePage()),
     _Item(name: 'pigeon 文件 API Doc', page: (_) => ApiDocPage()),
   ];
 
   Widget _button(BuildContext context, _Item item) {
-    Widget? subtitle;
     List<InlineSpan> subtitleSpans = [];
 
-    if (item.subtitle != null) {
-      subtitleSpans.add(TextSpan(text: item.subtitle));
-    }
     if (item.tags.isNotEmpty) {
       subtitleSpans.add(WidgetSpan(child: SizedBox(width: 8)));
       for (var i = 0; i < item.tags.length; i++) {

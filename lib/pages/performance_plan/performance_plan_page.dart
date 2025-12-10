@@ -13,6 +13,7 @@ class PerformancePlanPage extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 const _pigeonCode = '''// interface
 import 'package:pigeon/pigeon.dart';
 
@@ -49,6 +50,7 @@ class DeviceApiImpl : DeviceApi {
     }
 }''';
 
+// ignore: unused_element
 const _standardCode = '''// client
 class D {
   static const _c = MethodChannel('x');
