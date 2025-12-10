@@ -132,9 +132,23 @@ class _AutoTestPageState extends State<AutoTestPage> {
           maxY: maxY,
           lineTouchData: const LineTouchData(enabled: false),
           gridData: FlGridData(show: true, horizontalInterval: 20),
-          titlesData: const FlTitlesData(
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          titlesData: FlTitlesData(
+            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            bottomTitles: AxisTitles(
+              axisNameWidget: const Text('批次編號 (0-based)'),
+              axisNameSize: 22,
+              sideTitles: const SideTitles(showTitles: true, reservedSize: 22, interval: 5),
+            ),
+            leftTitles: AxisTitles(
+              axisNameWidget: const Text('平均耗時 (µs)'),
+              axisNameSize: 22,
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 40,
+                interval: 20,
+              ),
+            ),
           ),
           lineBarsData: [
             if (_mcSeries.isNotEmpty)
