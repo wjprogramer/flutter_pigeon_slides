@@ -23,6 +23,12 @@ class _DemoPageState extends State<DemoPage> {
   bool _running = false;
   String _perfLog = '';
 
+  String _fmtCounter(Counter? c) {
+    if (c == null) return '-';
+    final src = c.source ?? '';
+    return 'value=${c.value}${src.isEmpty ? '' : ' src=$src'}';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +49,24 @@ class _DemoPageState extends State<DemoPage> {
     super.dispose();
   }
 
+  Future<void> _refreshMethodChannel() async {
+    final method = await _channels.mcGetCounter();
+    if (!mounted) return;
+    setState(() => _methodChannelCounter = method);
+  }
+
+  Future<void> _refreshPigeon() async {
+    final pigeon = await _channels.pigeonGetCounter();
+    if (!mounted) return;
+    setState(() => _pigeon = pigeon);
+  }
+
+  Future<void> _refreshFfi() async {
+    final ffi = _ffi.getCounter();
+    if (!mounted) return;
+    setState(() => _ffiCounter = ffi);
+  }
+
   Future<void> _refreshAll() async {
     final method = await _channels.mcGetCounter();
     final pigeon = await _channels.pigeonGetCounter();
@@ -60,13 +84,29 @@ class _DemoPageState extends State<DemoPage> {
     setState(() => _methodChannelCounter = res);
   }
 
+  Future<void> _resetMc() async {
+    final res = await _channels.mcReset();
+    setState(() => _methodChannelCounter = res);
+  }
+
   Future<void> _incPigeon() async {
     final res = await _channels.pigeonIncrement(1);
     setState(() => _pigeon = res);
   }
 
+  Future<void> _resetPigeon() async {
+    await _channels.pigeonReset();
+    final res = await _channels.pigeonGetCounter();
+    setState(() => _pigeon = res);
+  }
+
   Future<void> _incFfi() async {
     final res = _ffi.increment(1);
+    setState(() => _ffiCounter = res);
+  }
+
+  Future<void> _resetFfi() async {
+    final res = _ffi.reset();
     setState(() => _ffiCounter = res);
   }
 
@@ -137,12 +177,163 @@ class _DemoPageState extends State<DemoPage> {
     );
   }
 
-  Widget _counterRow(String label, Counter? c) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _statusTable() {
+    return Table(
+      columnWidths: const {0: IntrinsicColumnWidth(), 1: FlexColumnWidth()},
       children: [
-        Text(label),
-        Text(c == null ? '-' : 'value=${c.value} src=${c.source ?? ''}'),
+        TableRow(children: [
+          const Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('MethodChannel')),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text(_fmtCounter(_methodChannelCounter)),
+          ),
+        ]),
+        TableRow(children: [
+          const Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('Pigeon HostApi')),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text(_fmtCounter(_pigeon)),
+          ),
+        ]),
+        TableRow(children: [
+          const Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('FFI')),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text(_fmtCounter(_ffiCounter)),
+          ),
+        ]),
+        TableRow(children: [
+          const Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('EventChannel')),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text('events=${_eventLatencies.length}'),
+          ),
+        ]),
+      ],
+    );
+  }
+
+  Widget _tableCell(Widget child) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+        child: child,
+      );
+
+  Widget _matrix() {
+    return Table(
+      columnWidths: const {
+        0: IntrinsicColumnWidth(),
+        1: FlexColumnWidth(),
+        2: FlexColumnWidth(),
+        3: FlexColumnWidth(),
+      },
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      children: [
+        const TableRow(children: [
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+            child: Text('方式', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+            child: Text('傳給原生', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+            child: Text('監聽原生', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+            child: Text('其他 / Perf', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ]),
+        TableRow(children: [
+          _tableCell(const Text('手寫 (Platform Channel)')),
+          _tableCell(Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              ElevatedButton(onPressed: _running ? null : _incMc, child: const Text('MethodChannel +1')),
+              ElevatedButton(onPressed: _running ? null : _refreshMethodChannel, child: const Text('刷新')),
+              ElevatedButton(onPressed: _running ? null : _resetMc, child: const Text('重置')),
+            ],
+          )),
+          _tableCell(Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('EventChannel：${_eventLatencies.length} 筆'),
+              if (_eventLatencies.isNotEmpty) Text('最新延遲(ms)：${_eventLatencies.last}'),
+            ],
+          )),
+          _tableCell(Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              ElevatedButton(onPressed: _running ? null : _echoBasic, child: const Text('Basic Echo')),
+              ElevatedButton(
+                onPressed: _running
+                    ? null
+                    : () => _runPerf(
+                          'MethodChannel x2000',
+                          () => _perfBatch('MethodChannel', () => _channels.mcIncrement(1)),
+                        ),
+                child: const Text('MethodChannel x2000'),
+              ),
+            ],
+          )),
+        ]),
+        TableRow(children: [
+          _tableCell(const Text('Pigeon (HostApi)')),
+          _tableCell(Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              ElevatedButton(onPressed: _running ? null : _incPigeon, child: const Text('Pigeon +1')),
+              ElevatedButton(onPressed: _running ? null : _refreshPigeon, child: const Text('刷新')),
+              ElevatedButton(onPressed: _running ? null : _resetPigeon, child: const Text('重置')),
+            ],
+          )),
+          _tableCell(const Text('（共用 EventChannel）')),
+          _tableCell(Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              ElevatedButton(
+                onPressed: _running
+                    ? null
+                    : () => _runPerf(
+                          'Pigeon x2000',
+                          () => _perfBatch('Pigeon', () => _channels.pigeonIncrement(1)),
+                        ),
+                child: const Text('Pigeon x2000'),
+              ),
+            ],
+          )),
+        ]),
+        TableRow(children: [
+          _tableCell(const Text('FFI')),
+          _tableCell(Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              ElevatedButton(onPressed: _running ? null : _incFfi, child: const Text('FFI +1')),
+              ElevatedButton(onPressed: _running ? null : _refreshFfi, child: const Text('刷新')),
+              ElevatedButton(onPressed: _running ? null : _resetFfi, child: const Text('重置')),
+            ],
+          )),
+          _tableCell(const Text('（無監聽）')),
+          _tableCell(Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              ElevatedButton(
+                onPressed: _running
+                    ? null
+                    : () => _runPerf('FFI x2000', () => _perfBatch('FFI', () async => _ffi.increment(1))),
+                child: const Text('FFI x2000'),
+              ),
+            ],
+          )),
+        ]),
       ],
     );
   }
@@ -156,61 +347,15 @@ class _DemoPageState extends State<DemoPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _section('Current', [
-              _counterRow('MethodChannel', _methodChannelCounter),
-              _counterRow('Pigeon', _pigeon),
-              _counterRow('FFI', _ffiCounter),
-              Text('Events received: ${_eventLatencies.length}'),
+            _section('當前狀態 (分通道)', [
+              _statusTable(),
+              const SizedBox(height: 4),
+              Text('事件延遲樣本數：${_eventLatencies.length}'),
             ]),
-            _section('Actions', [
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  ElevatedButton(onPressed: _running ? null : _refreshAll, child: const Text('Refresh All')),
-                  ElevatedButton(onPressed: _running ? null : _incMc, child: const Text('MethodChannel +1')),
-                  ElevatedButton(onPressed: _running ? null : _incPigeon, child: const Text('Pigeon +1')),
-                  ElevatedButton(onPressed: _running ? null : _incFfi, child: const Text('FFI +1')),
-                  ElevatedButton(onPressed: _running ? null : _resetAll, child: const Text('Reset')),
-                  ElevatedButton(onPressed: _running ? null : _echoBasic, child: const Text('Basic Echo')),
-                ],
-              ),
-            ]),
-            _section('Perf (端到端 T1~T4)', [
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  ElevatedButton(
-                    onPressed: _running
-                        ? null
-                        : () => _runPerf(
-                              'MethodChannel x2000',
-                              () => _perfBatch('MethodChannel', () => _channels.mcIncrement(1)),
-                            ),
-                    child: const Text('MethodChannel x2000'),
-                  ),
-                  ElevatedButton(
-                    onPressed: _running
-                        ? null
-                        : () => _runPerf('Pigeon x2000', () => _perfBatch('Pigeon', () => _channels.pigeonIncrement(1))),
-                    child: const Text('Pigeon x2000'),
-                  ),
-                  ElevatedButton(
-                    onPressed: _running
-                        ? null
-                        : () => _runPerf('FFI x2000', () => _perfBatch('FFI', () async => _ffi.increment(1))),
-                    child: const Text('FFI x2000'),
-                  ),
-                  ElevatedButton(
-                    onPressed: _running
-                        ? null
-                        : () => _runPerf(
-                              'BasicMessage x2000', () => _perfBatch('Basic', () => _channels.basicEcho({'v': 1}))),
-                    child: const Text('BasicMessage x2000'),
-                  ),
-                ],
-              ),
+            _section('矩陣操作（方式 x 通道類型）', [
+              _matrix(),
+              const SizedBox(height: 8),
+              ElevatedButton(onPressed: _running ? null : _resetAll, child: const Text('全部重置')),
               const SizedBox(height: 8),
               Text(_perfLog),
             ]),
