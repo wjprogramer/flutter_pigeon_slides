@@ -13,7 +13,6 @@ Counter _decodeCounter(dynamic data) {
     return Counter(
       value: value is int ? value : (value as num).toInt(),
       updatedAt: (data['updatedAt'] as num?)?.toInt(),
-      source: data['source'] as String?,
     );
   }
   throw PlatformException(code: 'bad-payload', message: 'Unsupported payload for Counter: ${data.runtimeType}');

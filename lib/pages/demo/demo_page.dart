@@ -39,8 +39,7 @@ class _DemoPageState extends State<DemoPage> {
 
   String _fmtCounter(Counter? c) {
     if (c == null) return '-';
-    final src = c.source ?? '';
-    return 'value=${c.value}${src.isEmpty ? '' : ' src=$src'}';
+    return 'value=${c.value}';
   }
 
   @override

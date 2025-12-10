@@ -35,16 +35,15 @@ class AppDelegate: FlutterAppDelegate {
     return Int64(Date().timeIntervalSince1970 * 1000)
   }
 
-  private func makeCounterPayload(value: Int64, updatedAt: Int64, source: String) -> [String: Any] {
+  private func makeCounterPayload(value: Int64, updatedAt: Int64) -> [String: Any] {
     return [
       "value": value,
-      "updatedAt": updatedAt,
-      "source": source
+      "updatedAt": updatedAt
     ]
   }
 
-  private func notifyMethodEvent(value: Int64, updatedAt: Int64, source: String) {
-    methodEventSink?(makeCounterPayload(value: value, updatedAt: updatedAt, source: source))
+  private func notifyMethodEvent(value: Int64, updatedAt: Int64) {
+    methodEventSink?(makeCounterPayload(value: value, updatedAt: updatedAt))
   }
 
   func configureChannels(controller: FlutterViewController) {
@@ -61,7 +60,7 @@ class AppDelegate: FlutterAppDelegate {
       NSLog("MethodChannel call: \(call.method)")
       switch call.method {
       case "getCounter":
-        result(self.makeCounterPayload(value: self.methodCounterValue, updatedAt: self.methodCounterUpdatedAt, source: "method_channel"))
+        result(self.makeCounterPayload(value: self.methodCounterValue, updatedAt: self.methodCounterUpdatedAt))
       case "increment":
         guard let args = call.arguments as? [String: Any], let delta = args["delta"] as? Int else {
           result(FlutterError(code: "bad-args", message: "Missing delta", details: nil))
@@ -69,14 +68,14 @@ class AppDelegate: FlutterAppDelegate {
         }
         methodCounterValue += Int64(delta)
         methodCounterUpdatedAt = nowMs()
-        let payload = makeCounterPayload(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
-        notifyMethodEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
+        let payload = makeCounterPayload(value: methodCounterValue, updatedAt: methodCounterUpdatedAt)
+        notifyMethodEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt)
         result(payload)
       case "reset":
         methodCounterValue = 0
         methodCounterUpdatedAt = nowMs()
-        let payload = makeCounterPayload(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
-        notifyMethodEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
+        let payload = makeCounterPayload(value: methodCounterValue, updatedAt: methodCounterUpdatedAt)
+        notifyMethodEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt)
         result(payload)
       case "emitMethodEvents":
         guard let args = call.arguments as? [String: Any], let count = args["count"] as? Int else {
@@ -115,8 +114,8 @@ class AppDelegate: FlutterAppDelegate {
     eventChannel.setStreamHandler(self)
 
     let watchHandler = CounterWatchHandler { [weak self] in
-      guard let self else { return Counter(value: 0, updatedAt: 0, source: "pigeon") }
-      return Counter(value: self.pigeonCounterValue, updatedAt: self.pigeonCounterUpdatedAt, source: "pigeon")
+      guard let self else { return Counter(value: 0, updatedAt: 0) }
+      return Counter(value: self.pigeonCounterValue, updatedAt: self.pigeonCounterUpdatedAt)
     }
     WatchStreamHandler.register(with: messenger, streamHandler: watchHandler)
     pigeonWatchHandler = watchHandler
@@ -127,7 +126,7 @@ class AppDelegate: FlutterAppDelegate {
   private func emitMethodEvents(count: Int) {
     guard count > 0 else { return }
     let ts = nowMs()
-    let payload = makeCounterPayload(value: methodCounterValue, updatedAt: ts, source: "method_event_burst")
+    let payload = makeCounterPayload(value: methodCounterValue, updatedAt: ts)
     for _ in 0..<count {
       methodEventSink?(payload)
     }
@@ -136,7 +135,7 @@ class AppDelegate: FlutterAppDelegate {
   private func emitPigeonEvents(count: Int) {
     guard count > 0 else { return }
     let ts = nowMs()
-    let counter = Counter(value: pigeonCounterValue, updatedAt: ts, source: "pigeon_event_burst")
+    let counter = Counter(value: pigeonCounterValue, updatedAt: ts)
     for _ in 0..<count {
       pigeonWatchHandler?.push(counter)
       flutterApi?.onCounter(counter: counter, completion: { _ in })
@@ -146,13 +145,13 @@ class AppDelegate: FlutterAppDelegate {
 
 extension AppDelegate: CounterHostApi {
   func getCounter() throws -> Counter {
-    return Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
+    return Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt)
   }
 
   func increment(delta: Int64) throws -> Counter {
     pigeonCounterValue += delta
     pigeonCounterUpdatedAt = nowMs()
-    let counter = Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
+    let counter = Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt)
     pigeonWatchHandler?.push(counter)
     flutterApi?.onCounter(counter: counter, completion: { _ in })
     return counter
@@ -161,7 +160,7 @@ extension AppDelegate: CounterHostApi {
   func reset() throws {
     pigeonCounterValue = 0
     pigeonCounterUpdatedAt = nowMs()
-    let counter = Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
+    let counter = Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt)
     pigeonWatchHandler?.push(counter)
     flutterApi?.onCounter(counter: counter, completion: { _ in })
   }

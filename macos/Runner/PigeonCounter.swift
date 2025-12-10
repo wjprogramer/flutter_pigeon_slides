@@ -136,26 +136,22 @@ func deepHashPigeonCounter(value: Any?, hasher: inout Hasher) {
 struct Counter: Hashable {
   var value: Int64
   var updatedAt: Int64? = nil
-  var source: String? = nil
 
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> Counter? {
     let value = pigeonVar_list[0] as! Int64
     let updatedAt: Int64? = nilOrValue(pigeonVar_list[1])
-    let source: String? = nilOrValue(pigeonVar_list[2])
 
     return Counter(
       value: value,
-      updatedAt: updatedAt,
-      source: source
+      updatedAt: updatedAt
     )
   }
   func toList() -> [Any?] {
     return [
       value,
       updatedAt,
-      source,
     ]
   }
   static func == (lhs: Counter, rhs: Counter) -> Bool {
@@ -208,7 +204,6 @@ protocol CounterHostApi {
   func getCounter() throws -> Counter
   func increment(delta: Int64) throws -> Counter
   func reset() throws
-  func emitEvent() throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -257,19 +252,6 @@ class CounterHostApiSetup {
       }
     } else {
       resetChannel.setMessageHandler(nil)
-    }
-    let emitEventChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_pigeon_slides.CounterHostApi.emitEvent\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
-    if let api = api {
-      emitEventChannel.setMessageHandler { _, reply in
-        do {
-          try api.emitEvent()
-          reply(wrapResult(nil))
-        } catch {
-          reply(wrapError(error))
-        }
-      }
-    } else {
-      emitEventChannel.setMessageHandler(nil)
     }
   }
 }

@@ -28,19 +28,16 @@ class CounterFfi {
   Counter getCounter() => Counter(
         value: _getCounter(),
         updatedAt: _getUpdatedAt(),
-        source: 'ffi',
       );
 
   Counter increment(int delta) => Counter(
         value: _addCounter(delta),
         updatedAt: _getUpdatedAt(),
-        source: 'ffi',
       );
 
   Counter reset() => Counter(
         value: _resetCounter(),
         updatedAt: _getUpdatedAt(),
-        source: 'ffi',
       );
 }
 

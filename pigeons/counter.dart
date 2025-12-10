@@ -12,12 +12,10 @@ class Counter {
   Counter({
     required this.value,
     this.updatedAt,
-    this.source,
   });
 
   int value;
   int? updatedAt;
-  String? source;
 }
 
 @HostApi()
