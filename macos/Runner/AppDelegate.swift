@@ -67,7 +67,6 @@ class AppDelegate: FlutterAppDelegate {
         methodCounterValue += Int64(delta)
         methodCounterUpdatedAt = nowMs()
         let payload = makeCounterPayload(value: methodCounterValue, updatedAt: methodCounterUpdatedAt)
-        notifyMethodEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt)
         result(payload)
       case "reset":
         methodCounterValue = 0
@@ -150,8 +149,6 @@ extension AppDelegate: CounterHostApi {
     pigeonCounterValue += delta
     pigeonCounterUpdatedAt = nowMs()
     let counter = Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt)
-    pigeonWatchHandler?.push(counter)
-    flutterApi?.onCounter(counter: counter, completion: { _ in })
     return counter
   }
 
