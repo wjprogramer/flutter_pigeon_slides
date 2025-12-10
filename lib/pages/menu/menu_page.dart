@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pigeon_slides/pages/api_doc/api_doc_page.dart';
+import 'package:flutter_pigeon_slides/pages/auto_test/auto_test_page.dart';
 import 'package:flutter_pigeon_slides/pages/demo/demo_page.dart';
 import 'package:flutter_pigeon_slides/pages/performance_plan/performance_plan_page.dart';
 import 'package:flutter_pigeon_slides/pages/readable/readable_page.dart';
@@ -14,6 +15,11 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   final _controller = TextEditingController();
   final _allItems = <_Item>[
+    _Item(
+      name: 'Auto Perf Runner',
+      page: (_) => const AutoTestPage(),
+      tags: [const _Tag(name: 'auto', color: Colors.orange)],
+    ),
     _Item(name: 'Demo / Perf', page: (_) => DemoPage(), tags: [const _Tag(name: 'new', color: Colors.green)]),
     _Item(name: 'Performance Plan', page: (_) => PerformancePlanPage()),
     _Item(name: '可讀性 Readable', page: (_) => ReadablePage()),
