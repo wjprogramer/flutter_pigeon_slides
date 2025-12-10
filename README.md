@@ -16,3 +16,7 @@
 - 協助團隊/觀眾理解 Pigeon 相對於標準 Platform Channels 的優勢與使用情境。
 - 透過可運行的 macOS 範例與投影片，展示程式碼可讀性、錯誤處理與開發效率差異。
 - 簡報受眾以 Android 開發者為主：展示程式碼將以 Android (Java/Kotlin) 片段為例，但實作與示範實際跑在 macOS。
+
+## Pigeon 生成指令
+- 以 fvm 執行全部介面檔的生成：
+  - `for f in pigeons/*.dart; do fvm dart run pigeon --input "$f"; done`
