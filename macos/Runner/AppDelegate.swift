@@ -18,7 +18,6 @@ class AppDelegate: FlutterAppDelegate {
 
   override func applicationDidFinishLaunching(_ notification: Notification) {
     super.applicationDidFinishLaunching(notification)
-    NSLog("AppDelegate applicationDidFinishLaunching start")
     // Channel setup is triggered from MainFlutterWindow.awakeFromNib
     // to ensure the FlutterViewController is fully initialized.
   }
@@ -48,7 +47,6 @@ class AppDelegate: FlutterAppDelegate {
 
   func configureChannels(controller: FlutterViewController) {
     let messenger = controller.engine.binaryMessenger
-    NSLog("AppDelegate setUpChannels invoked")
 
     // MethodChannel demo
     let methodChannel = FlutterMethodChannel(
@@ -57,7 +55,6 @@ class AppDelegate: FlutterAppDelegate {
     )
     methodChannel.setMethodCallHandler { [weak self] call, result in
       guard let self else { return }
-      NSLog("MethodChannel call: \(call.method)")
       switch call.method {
       case "getCounter":
         result(self.makeCounterPayload(value: self.methodCounterValue, updatedAt: self.methodCounterUpdatedAt))

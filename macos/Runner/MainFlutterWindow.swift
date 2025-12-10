@@ -15,9 +15,8 @@ class MainFlutterWindow: NSWindow {
         binaryMessenger: flutterViewController.engine.binaryMessenger,
         api: appDelegate
       )
-      NSLog("MainFlutterWindow configured custom channels and Pigeon APIs")
     } else {
-      NSLog("MainFlutterWindow could not find AppDelegate to configure channels")
+      // If this happens, channels won't be configured; likely app will not function properly.
     }
 
     super.awakeFromNib()
