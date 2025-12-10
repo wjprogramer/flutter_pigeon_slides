@@ -4,8 +4,14 @@ import Foundation
 
 @main
 class AppDelegate: FlutterAppDelegate {
-  private var counterValue: Int64 = 0
-  private var counterUpdatedAt: Int64 = 0
+  // MethodChannel state
+  private var methodCounterValue: Int64 = 0
+  private var methodCounterUpdatedAt: Int64 = 0
+
+  // Pigeon state
+  private var pigeonCounterValue: Int64 = 0
+  private var pigeonCounterUpdatedAt: Int64 = 0
+
   private var eventSink: FlutterEventSink?
 
   override func applicationDidFinishLaunching(_ notification: Notification) {
@@ -27,16 +33,16 @@ class AppDelegate: FlutterAppDelegate {
     return Int64(Date().timeIntervalSince1970 * 1000)
   }
 
-  private func makeCounterPayload(source: String) -> [String: Any] {
+  private func makeCounterPayload(value: Int64, updatedAt: Int64, source: String) -> [String: Any] {
     return [
-      "value": counterValue,
-      "updatedAt": counterUpdatedAt,
+      "value": value,
+      "updatedAt": updatedAt,
       "source": source
     ]
   }
 
-  private func notifyEvent(source: String) {
-    eventSink?(makeCounterPayload(source: source))
+  private func notifyEvent(value: Int64, updatedAt: Int64, source: String) {
+    eventSink?(makeCounterPayload(value: value, updatedAt: updatedAt, source: source))
   }
 
   func configureChannels(controller: FlutterViewController) {
@@ -53,22 +59,22 @@ class AppDelegate: FlutterAppDelegate {
       NSLog("MethodChannel call: \(call.method)")
       switch call.method {
       case "getCounter":
-        result(self.makeCounterPayload(source: "native_method"))
+        result(self.makeCounterPayload(value: self.methodCounterValue, updatedAt: self.methodCounterUpdatedAt, source: "method_channel"))
       case "increment":
         guard let args = call.arguments as? [String: Any], let delta = args["delta"] as? Int else {
           result(FlutterError(code: "bad-args", message: "Missing delta", details: nil))
           return
         }
-        counterValue += Int64(delta)
-        counterUpdatedAt = nowMs()
-        let payload = makeCounterPayload(source: "native_method")
-        notifyEvent(source: "native_method")
+        methodCounterValue += Int64(delta)
+        methodCounterUpdatedAt = nowMs()
+        let payload = makeCounterPayload(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
+        notifyEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
         result(payload)
       case "reset":
-        counterValue = 0
-        counterUpdatedAt = nowMs()
-        let payload = makeCounterPayload(source: "native_method")
-        notifyEvent(source: "native_method")
+        methodCounterValue = 0
+        methodCounterUpdatedAt = nowMs()
+        let payload = makeCounterPayload(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
+        notifyEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
         result(payload)
       default:
         result(FlutterMethodNotImplemented)
@@ -96,21 +102,21 @@ class AppDelegate: FlutterAppDelegate {
 
 extension AppDelegate: CounterHostApi {
   func getCounter() throws -> Counter {
-    return Counter(value: counterValue, updatedAt: counterUpdatedAt, source: "pigeon")
+    return Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
   }
 
   func increment(delta: Int64) throws -> Counter {
-    counterValue += delta
-    counterUpdatedAt = nowMs()
-    let counter = Counter(value: counterValue, updatedAt: counterUpdatedAt, source: "pigeon")
-    notifyEvent(source: "pigeon")
+    pigeonCounterValue += delta
+    pigeonCounterUpdatedAt = nowMs()
+    let counter = Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
+    notifyEvent(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
     return counter
   }
 
   func reset() throws {
-    counterValue = 0
-    counterUpdatedAt = nowMs()
-    notifyEvent(source: "pigeon")
+    pigeonCounterValue = 0
+    pigeonCounterUpdatedAt = nowMs()
+    notifyEvent(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
   }
 }
 

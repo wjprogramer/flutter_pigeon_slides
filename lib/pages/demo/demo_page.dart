@@ -16,7 +16,7 @@ class _DemoPageState extends State<DemoPage> {
   final _ffi = CounterFfi();
   StreamSubscription<Counter>? _eventSub;
 
-  Counter? _mc;
+  Counter? _methodChannelCounter;
   Counter? _pigeon;
   Counter? _ffiCounter;
   List<int> _eventLatencies = [];
@@ -44,12 +44,12 @@ class _DemoPageState extends State<DemoPage> {
   }
 
   Future<void> _refreshAll() async {
-    final mc = await _channels.mcGetCounter();
+    final method = await _channels.mcGetCounter();
     final pigeon = await _channels.pigeonGetCounter();
     final ffi = _ffi.getCounter();
     if (!mounted) return;
     setState(() {
-      _mc = mc;
+      _methodChannelCounter = method;
       _pigeon = pigeon;
       _ffiCounter = ffi;
     });
@@ -57,7 +57,7 @@ class _DemoPageState extends State<DemoPage> {
 
   Future<void> _incMc() async {
     final res = await _channels.mcIncrement(1);
-    setState(() => _mc = res);
+    setState(() => _methodChannelCounter = res);
   }
 
   Future<void> _incPigeon() async {
@@ -75,7 +75,7 @@ class _DemoPageState extends State<DemoPage> {
     await _channels.pigeonReset();
     final ffi = _ffi.reset();
     setState(() {
-      _mc = null;
+      _methodChannelCounter = null;
       _pigeon = null;
       _ffiCounter = ffi;
       _eventLatencies = [];
@@ -84,7 +84,7 @@ class _DemoPageState extends State<DemoPage> {
   }
 
   Future<void> _echoBasic() async {
-    final res = await _channels.basicEcho({'op': 'echo', 'value': _mc?.value ?? 0});
+    final res = await _channels.basicEcho({'op': 'echo', 'value': _methodChannelCounter?.value ?? 0});
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Echo: $res')));
   }
@@ -157,7 +157,7 @@ class _DemoPageState extends State<DemoPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _section('Current', [
-              _counterRow('MethodChannel', _mc),
+              _counterRow('MethodChannel', _methodChannelCounter),
               _counterRow('Pigeon', _pigeon),
               _counterRow('FFI', _ffiCounter),
               Text('Events received: ${_eventLatencies.length}'),
@@ -168,7 +168,7 @@ class _DemoPageState extends State<DemoPage> {
                 runSpacing: 8,
                 children: [
                   ElevatedButton(onPressed: _running ? null : _refreshAll, child: const Text('Refresh All')),
-                  ElevatedButton(onPressed: _running ? null : _incMc, child: const Text('MC +1')),
+                  ElevatedButton(onPressed: _running ? null : _incMc, child: const Text('MethodChannel +1')),
                   ElevatedButton(onPressed: _running ? null : _incPigeon, child: const Text('Pigeon +1')),
                   ElevatedButton(onPressed: _running ? null : _incFfi, child: const Text('FFI +1')),
                   ElevatedButton(onPressed: _running ? null : _resetAll, child: const Text('Reset')),
@@ -184,8 +184,11 @@ class _DemoPageState extends State<DemoPage> {
                   ElevatedButton(
                     onPressed: _running
                         ? null
-                        : () => _runPerf('MC x2000', () => _perfBatch('MC', () => _channels.mcIncrement(1))),
-                    child: const Text('MC x2000'),
+                        : () => _runPerf(
+                              'MethodChannel x2000',
+                              () => _perfBatch('MethodChannel', () => _channels.mcIncrement(1)),
+                            ),
+                    child: const Text('MethodChannel x2000'),
                   ),
                   ElevatedButton(
                     onPressed: _running
