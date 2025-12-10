@@ -44,6 +44,11 @@ class _AutoTestPageState extends State<AutoTestPage> {
   List<FlSpot> _spots(List<double> data) =>
       data.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList();
 
+  double _roundUp(double value, {double step = 20}) {
+    if (value <= 0) return step;
+    return (value / step).ceil() * step;
+  }
+
   Future<void> _runAuto() async {
     if (_running) return;
     setState(() {
@@ -114,7 +119,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
       ..._basicSeries,
       ..._ffiSeries
     ];
-    final maxY = allValues.isEmpty ? 0.0 : allValues.reduce((a, b) => a > b ? a : b);
+    final rawMaxY = allValues.isEmpty ? 0.0 : allValues.reduce((a, b) => a > b ? a : b);
+    final maxY = _roundUp(rawMaxY, step: 20);
 
     return SizedBox(
       height: 280,
@@ -123,9 +129,9 @@ class _AutoTestPageState extends State<AutoTestPage> {
           minX: 0,
           maxX: maxX == 0 ? 1 : maxX - 1,
           minY: 0,
-          maxY: maxY == 0 ? 1 : maxY * 1.1,
+          maxY: maxY,
           lineTouchData: const LineTouchData(enabled: false),
-          gridData: FlGridData(show: true, horizontalInterval: (maxY / 5).clamp(0.1, double.infinity)),
+          gridData: FlGridData(show: true, horizontalInterval: 20),
           titlesData: const FlTitlesData(
             rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
             topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
