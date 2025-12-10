@@ -27,3 +27,13 @@ abstract class CounterHostApi {
   void reset();
 }
 
+@EventChannelApi()
+abstract class CounterEventApi {
+  Counter watch();
+}
+
+@FlutterApi()
+abstract class CounterFlutterApi {
+  void onCounter(Counter counter);
+}
+

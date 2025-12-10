@@ -82,11 +82,9 @@ class _MenuPageState extends State<MenuPage> {
 }
 
 class _Item {
-  _Item({required this.name, this.subtitle, this.page, this.tags = const []});
+  _Item({required this.name, this.page, this.tags = const []});
 
   final String name;
-
-  final String? subtitle;
 
   final WidgetBuilder? page;
 

@@ -13,6 +13,8 @@ class AppDelegate: FlutterAppDelegate {
   private var pigeonCounterUpdatedAt: Int64 = 0
 
   private var eventSink: FlutterEventSink?
+  private var pigeonWatchHandler: CounterWatchHandler?
+  private var flutterApi: CounterFlutterApi?
 
   override func applicationDidFinishLaunching(_ notification: Notification) {
     super.applicationDidFinishLaunching(notification)
@@ -97,6 +99,15 @@ class AppDelegate: FlutterAppDelegate {
       binaryMessenger: messenger
     )
     eventChannel.setStreamHandler(self)
+
+    let watchHandler = CounterWatchHandler { [weak self] in
+      guard let self else { return Counter(value: 0, updatedAt: 0, source: "pigeon") }
+      return Counter(value: self.pigeonCounterValue, updatedAt: self.pigeonCounterUpdatedAt, source: "pigeon")
+    }
+    WatchStreamHandler.register(with: messenger, streamHandler: watchHandler)
+    pigeonWatchHandler = watchHandler
+
+    flutterApi = CounterFlutterApi(binaryMessenger: messenger)
   }
 }
 
@@ -110,13 +121,18 @@ extension AppDelegate: CounterHostApi {
     pigeonCounterUpdatedAt = nowMs()
     let counter = Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
     notifyEvent(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
+    pigeonWatchHandler?.push(counter)
+    flutterApi?.onCounter(counter: counter, completion: { _ in })
     return counter
   }
 
   func reset() throws {
     pigeonCounterValue = 0
     pigeonCounterUpdatedAt = nowMs()
+    let counter = Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
     notifyEvent(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
+    pigeonWatchHandler?.push(counter)
+    flutterApi?.onCounter(counter: counter, completion: { _ in })
   }
 }
 
@@ -129,5 +145,27 @@ extension AppDelegate: FlutterStreamHandler {
   func onCancel(withArguments arguments: Any?) -> FlutterError? {
     eventSink = nil
     return nil
+  }
+}
+
+private class CounterWatchHandler: WatchStreamHandler {
+  private var sink: PigeonEventSink<Counter>?
+  private let currentValue: () -> Counter
+
+  init(currentValue: @escaping () -> Counter) {
+    self.currentValue = currentValue
+  }
+
+  override func onListen(withArguments arguments: Any?, sink: PigeonEventSink<Counter>) {
+    self.sink = sink
+    sink.success(currentValue())
+  }
+
+  override func onCancel(withArguments arguments: Any?) {
+    sink = nil
+  }
+
+  func push(_ counter: Counter) {
+    sink?.success(counter)
   }
 }

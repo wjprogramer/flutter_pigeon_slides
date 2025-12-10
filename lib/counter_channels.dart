@@ -56,5 +56,13 @@ class CounterChannels {
 
   // Events
   Stream<Counter> events() => _eventChannel.receiveBroadcastStream().map(_decodeCounter);
+
+  // Pigeon EventChannelApi
+  Stream<Counter> pigeonEvents({String instanceName = ''}) => watch(instanceName: instanceName);
+
+  // FlutterApi from host -> flutter
+  void setupFlutterApi(CounterFlutterApi api) {
+    CounterFlutterApi.setUp(api);
+  }
 }
 

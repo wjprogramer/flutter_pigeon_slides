@@ -11,15 +11,29 @@ class DemoPage extends StatefulWidget {
   State<DemoPage> createState() => _DemoPageState();
 }
 
+class _DemoFlutterApi extends CounterFlutterApi {
+  _DemoFlutterApi({required this.onCounterHandler});
+
+  final void Function(Counter counter) onCounterHandler;
+
+  @override
+  void onCounter(Counter counter) {
+    onCounterHandler(counter);
+  }
+}
+
 class _DemoPageState extends State<DemoPage> {
   final _channels = CounterChannels();
   final _ffi = CounterFfi();
   StreamSubscription<Counter>? _eventSub;
+  StreamSubscription<Counter>? _pigeonEventSub;
 
   Counter? _methodChannelCounter;
   Counter? _pigeon;
   Counter? _ffiCounter;
   List<int> _eventLatencies = [];
+  int _pigeonEventCount = 0;
+  int _pigeonCallbackCount = 0;
   bool _running = false;
   String _perfLog = '';
 
@@ -40,31 +54,25 @@ class _DemoPageState extends State<DemoPage> {
         }
       });
     });
+    _pigeonEventSub = _channels.pigeonEvents().listen((_) {
+      setState(() {
+        _pigeonEventCount += 1;
+      });
+    });
+    _channels.setupFlutterApi(_DemoFlutterApi(onCounterHandler: (counter) {
+      setState(() {
+        _pigeonCallbackCount += 1;
+        _pigeon = counter;
+      });
+    }));
     _refreshAll();
   }
 
   @override
   void dispose() {
     _eventSub?.cancel();
+    _pigeonEventSub?.cancel();
     super.dispose();
-  }
-
-  Future<void> _refreshMethodChannel() async {
-    final method = await _channels.mcGetCounter();
-    if (!mounted) return;
-    setState(() => _methodChannelCounter = method);
-  }
-
-  Future<void> _refreshPigeon() async {
-    final pigeon = await _channels.pigeonGetCounter();
-    if (!mounted) return;
-    setState(() => _pigeon = pigeon);
-  }
-
-  Future<void> _refreshFfi() async {
-    final ffi = _ffi.getCounter();
-    if (!mounted) return;
-    setState(() => _ffiCounter = ffi);
   }
 
   Future<void> _refreshAll() async {
@@ -84,29 +92,13 @@ class _DemoPageState extends State<DemoPage> {
     setState(() => _methodChannelCounter = res);
   }
 
-  Future<void> _resetMc() async {
-    final res = await _channels.mcReset();
-    setState(() => _methodChannelCounter = res);
-  }
-
   Future<void> _incPigeon() async {
     final res = await _channels.pigeonIncrement(1);
     setState(() => _pigeon = res);
   }
 
-  Future<void> _resetPigeon() async {
-    await _channels.pigeonReset();
-    final res = await _channels.pigeonGetCounter();
-    setState(() => _pigeon = res);
-  }
-
   Future<void> _incFfi() async {
     final res = _ffi.increment(1);
-    setState(() => _ffiCounter = res);
-  }
-
-  Future<void> _resetFfi() async {
-    final res = _ffi.reset();
     setState(() => _ffiCounter = res);
   }
 
@@ -179,34 +171,49 @@ class _DemoPageState extends State<DemoPage> {
 
   Widget _statusTable() {
     return Table(
+      border: TableBorder.all(color: Colors.grey.shade400),
       columnWidths: const {0: IntrinsicColumnWidth(), 1: FlexColumnWidth()},
       children: [
         TableRow(children: [
-          const Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('MethodChannel')),
+          const Padding(padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10), child: Text('MethodChannel')),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Text(_fmtCounter(_methodChannelCounter)),
           ),
         ]),
         TableRow(children: [
-          const Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('Pigeon HostApi')),
+          const Padding(padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10), child: Text('Pigeon HostApi')),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Text(_fmtCounter(_pigeon)),
           ),
         ]),
         TableRow(children: [
-          const Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('FFI')),
+          const Padding(padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10), child: Text('FFI')),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Text(_fmtCounter(_ffiCounter)),
           ),
         ]),
         TableRow(children: [
-          const Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('EventChannel')),
+          const Padding(padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10), child: Text('EventChannel')),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Text('events=${_eventLatencies.length}'),
+          ),
+        ]),
+        TableRow(children: [
+          const Padding(padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10), child: Text('Pigeon EventChannelApi')),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            child: Text('events=$_pigeonEventCount'),
+          ),
+        ]),
+        TableRow(children: [
+          const Padding(padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10), child: Text('Pigeon FlutterApi')),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            child: Text('callbacks=$_pigeonCallbackCount'),
           ),
         ]),
       ],
@@ -214,12 +221,13 @@ class _DemoPageState extends State<DemoPage> {
   }
 
   Widget _tableCell(Widget child) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: child,
       );
 
   Widget _matrix() {
     return Table(
+      border: TableBorder.all(color: Colors.grey.shade400),
       columnWidths: const {
         0: IntrinsicColumnWidth(),
         1: FlexColumnWidth(),
@@ -230,19 +238,19 @@ class _DemoPageState extends State<DemoPage> {
       children: [
         const TableRow(children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Text('方式', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Text('傳給原生', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Text('監聽原生', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Text('其他 / Perf', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ]),
@@ -253,8 +261,6 @@ class _DemoPageState extends State<DemoPage> {
             runSpacing: 6,
             children: [
               ElevatedButton(onPressed: _running ? null : _incMc, child: const Text('MethodChannel +1')),
-              ElevatedButton(onPressed: _running ? null : _refreshMethodChannel, child: const Text('刷新')),
-              ElevatedButton(onPressed: _running ? null : _resetMc, child: const Text('重置')),
             ],
           )),
           _tableCell(Column(
@@ -282,17 +288,15 @@ class _DemoPageState extends State<DemoPage> {
           )),
         ]),
         TableRow(children: [
-          _tableCell(const Text('Pigeon (HostApi)')),
+          _tableCell(const Text('Pigeon')),
           _tableCell(Wrap(
             spacing: 6,
             runSpacing: 6,
             children: [
-              ElevatedButton(onPressed: _running ? null : _incPigeon, child: const Text('Pigeon +1')),
-              ElevatedButton(onPressed: _running ? null : _refreshPigeon, child: const Text('刷新')),
-              ElevatedButton(onPressed: _running ? null : _resetPigeon, child: const Text('重置')),
+              ElevatedButton(onPressed: _running ? null : _incPigeon, child: const Text('HostApi +1')),
             ],
           )),
-          _tableCell(const Text('（共用 EventChannel）')),
+          _tableCell(Text('Pigeon EventChannelApi：$_pigeonEventCount 筆')),
           _tableCell(Wrap(
             spacing: 6,
             runSpacing: 6,
@@ -316,8 +320,6 @@ class _DemoPageState extends State<DemoPage> {
             runSpacing: 6,
             children: [
               ElevatedButton(onPressed: _running ? null : _incFfi, child: const Text('FFI +1')),
-              ElevatedButton(onPressed: _running ? null : _refreshFfi, child: const Text('刷新')),
-              ElevatedButton(onPressed: _running ? null : _resetFfi, child: const Text('重置')),
             ],
           )),
           _tableCell(const Text('（無監聽）')),
@@ -354,6 +356,8 @@ class _DemoPageState extends State<DemoPage> {
             ]),
             _section('矩陣操作（方式 x 通道類型）', [
               _matrix(),
+              const SizedBox(height: 8),
+              ElevatedButton(onPressed: _running ? null : _refreshAll, child: const Text('刷新全部')),
               const SizedBox(height: 8),
               ElevatedButton(onPressed: _running ? null : _resetAll, child: const Text('全部重置')),
               const SizedBox(height: 8),

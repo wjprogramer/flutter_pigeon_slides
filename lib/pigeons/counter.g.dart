@@ -14,6 +14,16 @@ PlatformException _createConnectionError(String channelName) {
     message: 'Unable to establish connection on channel: "$channelName".',
   );
 }
+
+List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty = false}) {
+  if (empty) {
+    return <Object?>[];
+  }
+  if (error == null) {
+    return <Object?>[result];
+  }
+  return <Object?>[error.code, error.message, error.details];
+}
 bool _deepEquals(Object? a, Object? b) {
   if (a is List && b is List) {
     return a.length == b.length &&
@@ -107,6 +117,8 @@ class _PigeonCodec extends StandardMessageCodec {
   }
 }
 
+const StandardMethodCodec pigeonMethodCodec = StandardMethodCodec(_PigeonCodec());
+
 class CounterHostApi {
   /// Constructor for [CounterHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
@@ -193,6 +205,53 @@ class CounterHostApi {
       );
     } else {
       return;
+    }
+  }
+}
+
+Stream<Counter> watch( {String instanceName = ''}) {
+  if (instanceName.isNotEmpty) {
+    instanceName = '.$instanceName';
+  }
+  final EventChannel watchChannel =
+      EventChannel('dev.flutter.pigeon.flutter_pigeon_slides.CounterEventApi.watch$instanceName', pigeonMethodCodec);
+  return watchChannel.receiveBroadcastStream().map((dynamic event) {
+    return event as Counter;
+  });
+}
+    
+
+abstract class CounterFlutterApi {
+  static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
+
+  void onCounter(Counter counter);
+
+  static void setUp(CounterFlutterApi? api, {BinaryMessenger? binaryMessenger, String messageChannelSuffix = '',}) {
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.flutter_pigeon_slides.CounterFlutterApi.onCounter$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.flutter_pigeon_slides.CounterFlutterApi.onCounter was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final Counter? arg_counter = (args[0] as Counter?);
+          assert(arg_counter != null,
+              'Argument for dev.flutter.pigeon.flutter_pigeon_slides.CounterFlutterApi.onCounter was null, expected non-null Counter.');
+          try {
+            api.onCounter(arg_counter!);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
     }
   }
 }
