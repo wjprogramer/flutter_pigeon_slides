@@ -34,6 +34,13 @@ class _AutoTestPageState extends State<AutoTestPage> {
   final List<double> _m2fMethodSeries = [];
   final List<double> _m2fPigeonEventSeries = [];
   final List<double> _m2fPigeonFlutterSeries = [];
+  bool _mcEnabled = true;
+  bool _pigeonEnabled = true;
+  bool _basicEnabled = true;
+  bool _ffiEnabled = true;
+  bool _m2fMethodEnabled = true;
+  bool _m2fPigeonEventEnabled = true;
+  bool _m2fPigeonFlutterEnabled = true;
 
   bool _collectMethodEvents = false;
   bool _collectPigeonEvents = false;
@@ -65,6 +72,51 @@ class _AutoTestPageState extends State<AutoTestPage> {
   double _roundUp(double value, {double step = 20}) {
     if (value <= 0) return step;
     return (value / step).ceil() * step;
+  }
+
+  LineChartBarData _bar(List<double> data, Color color, bool enabled) {
+    return LineChartBarData(
+      spots: _spots(data),
+      color: color.withValues(alpha: enabled ? 1 : 0.2),
+      barWidth: 2,
+      isCurved: false,
+      dotData: const FlDotData(show: false),
+    );
+  }
+
+  Widget _seriesRow({
+    required String label,
+    required Color color,
+    required List<double> data,
+    required bool enabled,
+    required VoidCallback onToggle,
+  }) {
+    final displayColor = color.withValues(alpha: enabled ? 1 : 0.2);
+    final last = data.isNotEmpty ? data.last.toStringAsFixed(1) : '-';
+    final avg = data.isNotEmpty
+        ? (data.reduce((a, b) => a + b) / data.length).toStringAsFixed(1)
+        : '-';
+    return InkWell(
+      onTap: onToggle,
+      borderRadius: BorderRadius.circular(6),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            Container(width: 12, height: 12, color: displayColor),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                label,
+              ),
+            ),
+            Text(
+              '最新: $last µs | 平均: $avg µs',
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -301,37 +353,13 @@ class _AutoTestPageState extends State<AutoTestPage> {
           ),
           lineBarsData: [
             if (_mcSeries.isNotEmpty)
-              LineChartBarData(
-                spots: _spots(_mcSeries),
-                color: Colors.blue,
-                barWidth: 2,
-                isCurved: false,
-                dotData: const FlDotData(show: false),
-              ),
+              _bar(_mcSeries, Colors.blue, _mcEnabled),
             if (_pigeonSeries.isNotEmpty)
-              LineChartBarData(
-                spots: _spots(_pigeonSeries),
-                color: Colors.green,
-                barWidth: 2,
-                isCurved: false,
-                dotData: const FlDotData(show: false),
-              ),
+              _bar(_pigeonSeries, Colors.green, _pigeonEnabled),
             if (_basicSeries.isNotEmpty)
-              LineChartBarData(
-                spots: _spots(_basicSeries),
-                color: Colors.orange,
-                barWidth: 2,
-                isCurved: false,
-                dotData: const FlDotData(show: false),
-              ),
+              _bar(_basicSeries, Colors.orange, _basicEnabled),
             if (_ffiSeries.isNotEmpty)
-              LineChartBarData(
-                spots: _spots(_ffiSeries),
-                color: Colors.purple,
-                barWidth: 2,
-                isCurved: false,
-                dotData: const FlDotData(show: false),
-              ),
+              _bar(_ffiSeries, Colors.purple, _ffiEnabled),
           ],
         ),
       ),
@@ -389,86 +417,14 @@ class _AutoTestPageState extends State<AutoTestPage> {
           ),
           lineBarsData: [
             if (_m2fMethodSeries.isNotEmpty)
-              LineChartBarData(
-                spots: _spots(_m2fMethodSeries),
-                color: Colors.blue,
-                barWidth: 2,
-                isCurved: false,
-                dotData: const FlDotData(show: false),
-              ),
+              _bar(_m2fMethodSeries, Colors.blue, _m2fMethodEnabled),
             if (_m2fPigeonEventSeries.isNotEmpty)
-              LineChartBarData(
-                spots: _spots(_m2fPigeonEventSeries),
-                color: Colors.green,
-                barWidth: 2,
-                isCurved: false,
-                dotData: const FlDotData(show: false),
-              ),
+              _bar(_m2fPigeonEventSeries, Colors.green, _m2fPigeonEventEnabled),
             if (_m2fPigeonFlutterSeries.isNotEmpty)
-              LineChartBarData(
-                spots: _spots(_m2fPigeonFlutterSeries),
-                color: Colors.teal,
-                barWidth: 2,
-                isCurved: false,
-                dotData: const FlDotData(show: false),
-              ),
+              _bar(_m2fPigeonFlutterSeries, Colors.teal, _m2fPigeonFlutterEnabled),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _legend() {
-    Widget chip(Color c, String t) => Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(width: 12, height: 12, color: c),
-            const SizedBox(width: 6),
-            Text(t),
-          ],
-        );
-    return Wrap(
-      spacing: 12,
-      runSpacing: 8,
-      children: [
-        chip(Colors.blue, 'MethodChannel'),
-        chip(Colors.green, 'Pigeon HostApi'),
-        chip(Colors.orange, 'BasicMessageChannel'),
-        chip(Colors.purple, 'FFI'),
-      ],
-    );
-  }
-
-  Widget _legendM2F() {
-    Widget chip(Color c, String t) => Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(width: 12, height: 12, color: c),
-            const SizedBox(width: 6),
-            Text(t),
-          ],
-        );
-    return Wrap(
-      spacing: 12,
-      runSpacing: 8,
-      children: [
-        chip(Colors.blue, 'MethodChannel EventChannel'),
-        chip(Colors.green, 'Pigeon EventChannelApi'),
-        chip(Colors.teal, 'Pigeon FlutterApi'),
-      ],
-    );
-  }
-
-  Widget _summaryRow(String label, List<double> data) {
-    final last = data.isNotEmpty ? data.last.toStringAsFixed(1) : '-';
-    final avg =
-        data.isNotEmpty ? (data.reduce((a, b) => a + b) / data.length).toStringAsFixed(1) : '-';
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label),
-        Text('最新: $last µs | 平均: $avg µs'),
-      ],
     );
   }
 
@@ -509,12 +465,34 @@ class _AutoTestPageState extends State<AutoTestPage> {
                     const SizedBox(height: 8),
                     _chart(),
                     const SizedBox(height: 8),
-                    _legend(),
-                    const SizedBox(height: 12),
-                    _summaryRow('MethodChannel', _mcSeries),
-                    _summaryRow('Pigeon HostApi', _pigeonSeries),
-                    _summaryRow('BasicMessageChannel', _basicSeries),
-                    _summaryRow('FFI', _ffiSeries),
+                    _seriesRow(
+                      label: 'MethodChannel',
+                      color: Colors.blue,
+                      data: _mcSeries,
+                      enabled: _mcEnabled,
+                      onToggle: () => setState(() => _mcEnabled = !_mcEnabled),
+                    ),
+                    _seriesRow(
+                      label: 'Pigeon HostApi',
+                      color: Colors.green,
+                      data: _pigeonSeries,
+                      enabled: _pigeonEnabled,
+                      onToggle: () => setState(() => _pigeonEnabled = !_pigeonEnabled),
+                    ),
+                    _seriesRow(
+                      label: 'BasicMessageChannel',
+                      color: Colors.orange,
+                      data: _basicSeries,
+                      enabled: _basicEnabled,
+                      onToggle: () => setState(() => _basicEnabled = !_basicEnabled),
+                    ),
+                    _seriesRow(
+                      label: 'FFI',
+                      color: Colors.purple,
+                      data: _ffiSeries,
+                      enabled: _ffiEnabled,
+                      onToggle: () => setState(() => _ffiEnabled = !_ffiEnabled),
+                    ),
                     const SizedBox(height: 20),
                     const Divider(),
                     const SizedBox(height: 8),
@@ -522,11 +500,29 @@ class _AutoTestPageState extends State<AutoTestPage> {
                     const SizedBox(height: 12),
                     _chartNativeToFlutter(),
                     const SizedBox(height: 8),
-                    _legendM2F(),
-                    const SizedBox(height: 12),
-                    _summaryRow('MethodChannel EventChannel', _m2fMethodSeries),
-                    _summaryRow('Pigeon EventChannelApi', _m2fPigeonEventSeries),
-                    _summaryRow('Pigeon FlutterApi', _m2fPigeonFlutterSeries),
+                    _seriesRow(
+                      label: 'MethodChannel EventChannel',
+                      color: Colors.blue,
+                      data: _m2fMethodSeries,
+                      enabled: _m2fMethodEnabled,
+                      onToggle: () => setState(() => _m2fMethodEnabled = !_m2fMethodEnabled),
+                    ),
+                    _seriesRow(
+                      label: 'Pigeon EventChannelApi',
+                      color: Colors.green,
+                      data: _m2fPigeonEventSeries,
+                      enabled: _m2fPigeonEventEnabled,
+                      onToggle: () =>
+                          setState(() => _m2fPigeonEventEnabled = !_m2fPigeonEventEnabled),
+                    ),
+                    _seriesRow(
+                      label: 'Pigeon FlutterApi',
+                      color: Colors.teal,
+                      data: _m2fPigeonFlutterSeries,
+                      enabled: _m2fPigeonFlutterEnabled,
+                      onToggle: () =>
+                          setState(() => _m2fPigeonFlutterEnabled = !_m2fPigeonFlutterEnabled),
+                    ),
                   ],
                 ),
               ),
