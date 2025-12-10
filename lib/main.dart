@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pigeon_slides/app_scale.dart';
 import 'package:flutter_pigeon_slides/pages/menu/menu_page.dart';
 import 'package:flutter_pigeon_slides/theme/theme.dart';
 import 'package:flutter_pigeon_slides/utils/error_handling.dart';
@@ -30,6 +31,21 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark),
         useMaterial3: true,
       ),
+      builder: (context, child) {
+        return ValueListenableBuilder<double>(
+          valueListenable: appScale,
+          builder: (context, scale, _) {
+            // 簡報頁(MyHomePage)不縮放，其他頁套用全域縮放。
+            if (child is MyHomePage) return child;
+            final media = MediaQuery.of(context);
+            final scaled = scale.clamp(0.8, 1.8);
+            return MediaQuery(
+              data: media.copyWith(textScaler: TextScaler.linear(scaled)),
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
+        );
+      },
       home: const MyHomePage(),
     );
   }
@@ -47,11 +63,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        SlideDeck(
-          slides: [
+    final media = MediaQuery.of(context);
+    return MediaQuery(
+      data: media.copyWith(textScaler: const TextScaler.linear(1.0)),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          SlideDeck(
+            slides: [
             FullScreenImageSlide(
               image: const AssetImage('assets/logo-background.jpg'),
               title: 'Pigeon 介紹',
@@ -481,6 +500,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ],
-    );
+    ),
+  );
   }
 }

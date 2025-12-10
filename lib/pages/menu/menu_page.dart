@@ -4,6 +4,7 @@ import 'package:flutter_pigeon_slides/pages/auto_test/auto_test_page.dart';
 import 'package:flutter_pigeon_slides/pages/demo/demo_page.dart';
 import 'package:flutter_pigeon_slides/pages/performance_plan/performance_plan_page.dart';
 import 'package:flutter_pigeon_slides/pages/readable/readable_page.dart';
+import 'package:flutter_pigeon_slides/pages/settings/settings_page.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
@@ -20,7 +21,11 @@ class _MenuPageState extends State<MenuPage> {
       page: (_) => const AutoTestPage(),
       tags: [const _Tag(name: 'auto', color: Colors.orange)],
     ),
-    _Item(name: 'Demo / Perf', page: (_) => DemoPage(), tags: [const _Tag(name: 'new', color: Colors.green)]),
+    _Item(
+      name: 'Demo / Perf',
+      page: (_) => DemoPage(),
+      tags: [const _Tag(name: 'new', color: Colors.green)],
+    ),
     _Item(name: 'Performance Plan', page: (_) => PerformancePlanPage()),
     _Item(name: '可讀性 Readable', page: (_) => ReadablePage()),
     _Item(name: 'pigeon 文件 API Doc', page: (_) => ApiDocPage()),
@@ -50,7 +55,9 @@ class _MenuPageState extends State<MenuPage> {
       trailing: Icon(Icons.chevron_right),
       onTap: () {
         if (item.page != null) {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => item.page!(context)));
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => item.page!(context)));
         }
       },
     );
@@ -61,25 +68,38 @@ class _MenuPageState extends State<MenuPage> {
     if (resolvedQuery == null || resolvedQuery.isEmpty) {
       return _allItems;
     }
-    return _allItems.where((e) => e.name.toLowerCase().contains(resolvedQuery)).toList();
+    return _allItems
+        .where((e) => e.name.toLowerCase().contains(resolvedQuery))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     final items = _filterItems(_controller.text);
     return Scaffold(
-      appBar: AppBar(title: Text('Menu')),
+      appBar: AppBar(
+        title: const Text('Menu'),
+        actions: [
+          IconButton(
+            tooltip: '設定',
+            icon: const Icon(Icons.settings),
+            onPressed: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const SettingsPage())),
+          ),
+        ],
+      ),
       body: ListView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         children: [
           TextField(
             controller: _controller,
-            decoration: InputDecoration(labelText: '關鍵字'),
+            decoration: const InputDecoration(labelText: '關鍵字'),
             onChanged: (_) {
               setState(() {});
             },
           ),
-          Divider(),
+          const Divider(),
           ...items.map((e) => _button(context, e)),
         ],
       ),
@@ -118,8 +138,10 @@ class _TagView extends StatelessWidget {
         color: tag.color,
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Text(tag.name, style: TextStyle(color: Colors.white, fontSize: 12)),
+      child: Text(
+        tag.name,
+        style: TextStyle(color: Colors.white, fontSize: 12),
+      ),
     );
   }
 }
-
