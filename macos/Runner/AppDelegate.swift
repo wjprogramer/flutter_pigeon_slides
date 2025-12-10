@@ -12,7 +12,7 @@ class AppDelegate: FlutterAppDelegate {
   private var pigeonCounterValue: Int64 = 0
   private var pigeonCounterUpdatedAt: Int64 = 0
 
-  private var eventSink: FlutterEventSink?
+  private var methodEventSink: FlutterEventSink?
   private var pigeonWatchHandler: CounterWatchHandler?
   private var flutterApi: CounterFlutterApi?
 
@@ -43,8 +43,8 @@ class AppDelegate: FlutterAppDelegate {
     ]
   }
 
-  private func notifyEvent(value: Int64, updatedAt: Int64, source: String) {
-    eventSink?(makeCounterPayload(value: value, updatedAt: updatedAt, source: source))
+  private func notifyMethodEvent(value: Int64, updatedAt: Int64, source: String) {
+    methodEventSink?(makeCounterPayload(value: value, updatedAt: updatedAt, source: source))
   }
 
   func configureChannels(controller: FlutterViewController) {
@@ -70,13 +70,13 @@ class AppDelegate: FlutterAppDelegate {
         methodCounterValue += Int64(delta)
         methodCounterUpdatedAt = nowMs()
         let payload = makeCounterPayload(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
-        notifyEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
+        notifyMethodEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
         result(payload)
       case "reset":
         methodCounterValue = 0
         methodCounterUpdatedAt = nowMs()
         let payload = makeCounterPayload(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
-        notifyEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
+        notifyMethodEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
         result(payload)
       default:
         result(FlutterMethodNotImplemented)
@@ -120,7 +120,6 @@ extension AppDelegate: CounterHostApi {
     pigeonCounterValue += delta
     pigeonCounterUpdatedAt = nowMs()
     let counter = Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
-    notifyEvent(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
     pigeonWatchHandler?.push(counter)
     flutterApi?.onCounter(counter: counter, completion: { _ in })
     return counter
@@ -130,7 +129,6 @@ extension AppDelegate: CounterHostApi {
     pigeonCounterValue = 0
     pigeonCounterUpdatedAt = nowMs()
     let counter = Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
-    notifyEvent(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
     pigeonWatchHandler?.push(counter)
     flutterApi?.onCounter(counter: counter, completion: { _ in })
   }
@@ -138,12 +136,12 @@ extension AppDelegate: CounterHostApi {
 
 extension AppDelegate: FlutterStreamHandler {
   func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-    eventSink = events
+    methodEventSink = events
     return nil
   }
 
   func onCancel(withArguments arguments: Any?) -> FlutterError? {
-    eventSink = nil
+    methodEventSink = nil
     return nil
   }
 }
