@@ -34,10 +34,11 @@ class AppDelegate: FlutterAppDelegate {
     return Int64(Date().timeIntervalSince1970 * 1000)
   }
 
+  // 使用短鍵以降低序列化負載
   private func makeCounterPayload(value: Int64, updatedAt: Int64) -> [String: Any] {
     return [
-      "value": value,
-      "updatedAt": updatedAt
+      "v": value,
+      "t": updatedAt
     ]
   }
 

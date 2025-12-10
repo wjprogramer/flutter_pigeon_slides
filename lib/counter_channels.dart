@@ -9,10 +9,11 @@ Counter _decodeCounter(dynamic data) {
   }
   if (data is Counter) return data;
   if (data is Map) {
-    final value = data['value'];
+    final value = data['value'] ?? data['v'];
+    final ts = data['updatedAt'] ?? data['t'];
     return Counter(
       value: value is int ? value : (value as num).toInt(),
-      updatedAt: (data['updatedAt'] as num?)?.toInt(),
+      updatedAt: (ts as num?)?.toInt(),
     );
   }
   throw PlatformException(code: 'bad-payload', message: 'Unsupported payload for Counter: ${data.runtimeType}');
