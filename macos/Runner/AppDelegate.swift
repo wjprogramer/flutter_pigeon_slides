@@ -78,6 +78,20 @@ class AppDelegate: FlutterAppDelegate {
         let payload = makeCounterPayload(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
         notifyMethodEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt, source: "method_channel")
         result(payload)
+      case "emitMethodEvents":
+        guard let args = call.arguments as? [String: Any], let count = args["count"] as? Int else {
+          result(FlutterError(code: "bad-args", message: "Missing count", details: nil))
+          return
+        }
+        emitMethodEvents(count: count)
+        result(nil)
+      case "emitPigeonEvents":
+        guard let args = call.arguments as? [String: Any], let count = args["count"] as? Int else {
+          result(FlutterError(code: "bad-args", message: "Missing count", details: nil))
+          return
+        }
+        emitPigeonEvents(count: count)
+        result(nil)
       default:
         result(FlutterMethodNotImplemented)
       }
@@ -109,6 +123,25 @@ class AppDelegate: FlutterAppDelegate {
 
     flutterApi = CounterFlutterApi(binaryMessenger: messenger)
   }
+
+  private func emitMethodEvents(count: Int) {
+    guard count > 0 else { return }
+    let ts = nowMs()
+    let payload = makeCounterPayload(value: methodCounterValue, updatedAt: ts, source: "method_event_burst")
+    for _ in 0..<count {
+      methodEventSink?(payload)
+    }
+  }
+
+  private func emitPigeonEvents(count: Int) {
+    guard count > 0 else { return }
+    let ts = nowMs()
+    let counter = Counter(value: pigeonCounterValue, updatedAt: ts, source: "pigeon_event_burst")
+    for _ in 0..<count {
+      pigeonWatchHandler?.push(counter)
+      flutterApi?.onCounter(counter: counter, completion: { _ in })
+    }
+  }
 }
 
 extension AppDelegate: CounterHostApi {
@@ -131,6 +164,10 @@ extension AppDelegate: CounterHostApi {
     let counter = Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt, source: "pigeon")
     pigeonWatchHandler?.push(counter)
     flutterApi?.onCounter(counter: counter, completion: { _ in })
+  }
+
+  func emitEvent() throws {
+    // For protocol conformance; existing pigeonEmitEvents handles batch pushes.
   }
 }
 

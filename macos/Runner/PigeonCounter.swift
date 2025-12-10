@@ -208,6 +208,7 @@ protocol CounterHostApi {
   func getCounter() throws -> Counter
   func increment(delta: Int64) throws -> Counter
   func reset() throws
+  func emitEvent() throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -256,6 +257,19 @@ class CounterHostApiSetup {
       }
     } else {
       resetChannel.setMessageHandler(nil)
+    }
+    let emitEventChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.flutter_pigeon_slides.CounterHostApi.emitEvent\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      emitEventChannel.setMessageHandler { _, reply in
+        do {
+          try api.emitEvent()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      emitEventChannel.setMessageHandler(nil)
     }
   }
 }

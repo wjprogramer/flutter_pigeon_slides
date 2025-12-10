@@ -64,5 +64,11 @@ class CounterChannels {
   void setupFlutterApi(CounterFlutterApi api) {
     CounterFlutterApi.setUp(api);
   }
+
+  // Native -> Flutter burst emit (for perf test)
+  Future<void> mcEmitEvents(int count) => _methodChannel.invokeMethod('emitMethodEvents', {'count': count});
+
+  Future<void> pigeonEmitEvents(int count) =>
+      _methodChannel.invokeMethod('emitPigeonEvents', {'count': count});
 }
 

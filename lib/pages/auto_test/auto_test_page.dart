@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pigeon_slides/counter_channels.dart';
 import 'package:flutter_pigeon_slides/counter_ffi.dart';
+import 'package:flutter_pigeon_slides/pigeons/counter.g.dart';
 
 class AutoTestPage extends StatefulWidget {
   const AutoTestPage({super.key});
@@ -17,14 +18,31 @@ class _AutoTestPageState extends State<AutoTestPage> {
 
   final int _batchSize = 2000;
   final int _batches = 30;
+  final int _eventBurst = 2000;
+  final int _eventBatches = 30;
 
   bool _running = false;
   String _status = '待執行';
+
+  StreamSubscription<Counter>? _methodEventSub;
+  StreamSubscription<Counter>? _pigeonEventSub;
 
   final List<double> _mcSeries = [];
   final List<double> _pigeonSeries = [];
   final List<double> _basicSeries = [];
   final List<double> _ffiSeries = [];
+  final List<double> _m2fMethodSeries = [];
+  final List<double> _m2fPigeonEventSeries = [];
+  final List<double> _m2fPigeonFlutterSeries = [];
+
+  bool _collectMethodEvents = false;
+  bool _collectPigeonEvents = false;
+  bool _collectPigeonFlutter = false;
+  int _expectEvents = 0;
+  final List<double> _methodBurst = [];
+  final List<double> _pigeonBurst = [];
+  final List<double> _pigeonFlutterBurst = [];
+  Completer<void>? _eventCompleter;
 
   Future<void> _resetCounters() async {
     await _channels.mcReset();
@@ -49,19 +67,67 @@ class _AutoTestPageState extends State<AutoTestPage> {
     return (value / step).ceil() * step;
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _methodEventSub = _channels.events().listen((event) {
+      if (!_collectMethodEvents || _methodBurst.length >= _expectEvents) return;
+      if (event.updatedAt != null) {
+        final now = DateTime.now().millisecondsSinceEpoch.toDouble();
+        _methodBurst.add((now - event.updatedAt!.toDouble()).clamp(0, double.maxFinite));
+        if (_methodBurst.length >= _expectEvents) {
+          _eventCompleter?.complete();
+        }
+      }
+    });
+    _pigeonEventSub = _channels.pigeonEvents().listen((event) {
+      if (!_collectPigeonEvents || _pigeonBurst.length >= _expectEvents) return;
+      if (event.updatedAt != null) {
+        final now = DateTime.now().millisecondsSinceEpoch.toDouble();
+        _pigeonBurst.add((now - event.updatedAt!.toDouble()).clamp(0, double.maxFinite));
+        if (_pigeonBurst.length >= _expectEvents) {
+          _eventCompleter?.complete();
+        }
+      }
+    });
+    _channels.setupFlutterApi(_DemoFlutterApi(onCounterHandler: (counter) {
+      if (_collectPigeonFlutter && _pigeonFlutterBurst.length < _expectEvents) {
+        final now = DateTime.now().millisecondsSinceEpoch.toDouble();
+        final ts = (counter.updatedAt?.toDouble() ?? now);
+        _pigeonFlutterBurst.add((now - ts).clamp(0, double.maxFinite));
+        if (_pigeonFlutterBurst.length >= _expectEvents) {
+          _eventCompleter?.complete();
+        }
+      }
+    }));
+  }
+
+  @override
+  void dispose() {
+    _methodEventSub?.cancel();
+    _pigeonEventSub?.cancel();
+    super.dispose();
+  }
+
   Future<void> _runAuto() async {
     if (_running) return;
     setState(() {
       _running = true;
-      _status = '準備中...';
+      _status = '準備中...（Flutter → 原生）';
       _mcSeries.clear();
       _pigeonSeries.clear();
       _basicSeries.clear();
       _ffiSeries.clear();
+      _m2fMethodSeries.clear();
+      _m2fPigeonEventSeries.clear();
+      _m2fPigeonFlutterSeries.clear();
+      _methodBurst.clear();
+      _pigeonBurst.clear();
+      _pigeonFlutterBurst.clear();
     });
 
     await _resetCounters();
-    setState(() => _status = '執行中：$_batches 組，每組 $_batchSize 次');
+    setState(() => _status = '執行中：Flutter → 原生 $_batches 組，每組 $_batchSize 次');
 
     for (var i = 0; i < _batches && _running; i++) {
       final mc = await _measureAvgMicros(() => _channels.mcIncrement(1));
@@ -83,6 +149,10 @@ class _AutoTestPageState extends State<AutoTestPage> {
       await Future.delayed(const Duration(milliseconds: 1));
     }
 
+    if (_running) {
+      await _runNativeToFlutter();
+    }
+
     if (mounted) {
       setState(() {
         _running = false;
@@ -96,6 +166,85 @@ class _AutoTestPageState extends State<AutoTestPage> {
       _running = false;
       _status = '已停止';
     });
+  }
+
+  Future<void> _waitOrTimeout(Completer<void> c) async {
+    try {
+      await c.future.timeout(const Duration(seconds: 3));
+    } catch (_) {}
+  }
+
+  Future<double> _measureMethodToFlutter() async {
+    _collectMethodEvents = true;
+    _collectPigeonEvents = false;
+    _collectPigeonFlutter = false;
+    _expectEvents = _eventBurst;
+    _methodBurst.clear();
+    _eventCompleter = Completer<void>();
+    await _channels.mcEmitEvents(_eventBurst);
+    await _waitOrTimeout(_eventCompleter!);
+    _collectMethodEvents = false;
+    final avg =
+        _methodBurst.isEmpty ? 0.0 : (_methodBurst.reduce((a, b) => a + b) / _methodBurst.length);
+    _methodBurst.clear();
+    _eventCompleter = null;
+    return avg;
+  }
+
+  Future<double> _measurePigeonEventToFlutter() async {
+    _collectMethodEvents = false;
+    _collectPigeonEvents = true;
+    _collectPigeonFlutter = false;
+    _expectEvents = _eventBurst;
+    _pigeonBurst.clear();
+    _eventCompleter = Completer<void>();
+    await _channels.pigeonEmitEvents(_eventBurst);
+    await _waitOrTimeout(_eventCompleter!);
+    _collectPigeonEvents = false;
+    final avg =
+        _pigeonBurst.isEmpty ? 0.0 : (_pigeonBurst.reduce((a, b) => a + b) / _pigeonBurst.length);
+    _pigeonBurst.clear();
+    _eventCompleter = null;
+    return avg;
+  }
+
+  Future<double> _measurePigeonFlutterApiToFlutter() async {
+    _collectMethodEvents = false;
+    _collectPigeonEvents = false;
+    _collectPigeonFlutter = true;
+    _expectEvents = _eventBurst;
+    _pigeonFlutterBurst.clear();
+    _eventCompleter = Completer<void>();
+    await _channels.pigeonEmitEvents(_eventBurst);
+    await _waitOrTimeout(_eventCompleter!);
+    _collectPigeonFlutter = false;
+    final avg = _pigeonFlutterBurst.isEmpty
+        ? 0.0
+        : (_pigeonFlutterBurst.reduce((a, b) => a + b) / _pigeonFlutterBurst.length);
+    _pigeonFlutterBurst.clear();
+    _eventCompleter = null;
+    return avg;
+  }
+
+  Future<void> _runNativeToFlutter() async {
+    setState(() {
+      _status = '準備中...（原生 → Flutter）';
+    });
+    _m2fMethodSeries.clear();
+    _m2fPigeonEventSeries.clear();
+    _m2fPigeonFlutterSeries.clear();
+    for (var i = 0; i < _eventBatches && _running; i++) {
+      setState(() => _status = '原生 → Flutter 進度 ${i + 1}/$_eventBatches');
+      final m = await _measureMethodToFlutter();
+      final pe = await _measurePigeonEventToFlutter();
+      final pf = await _measurePigeonFlutterApiToFlutter();
+      if (!_running) break;
+      setState(() {
+        _m2fMethodSeries.add(m);
+        _m2fPigeonEventSeries.add(pe);
+        _m2fPigeonFlutterSeries.add(pf);
+      });
+    }
   }
 
   Widget _chart() {
@@ -189,6 +338,86 @@ class _AutoTestPageState extends State<AutoTestPage> {
     );
   }
 
+  Widget _chartNativeToFlutter() {
+    if (_m2fMethodSeries.isEmpty &&
+        _m2fPigeonEventSeries.isEmpty &&
+        _m2fPigeonFlutterSeries.isEmpty) {
+      return const Text('尚無資料，請先執行自動測試');
+    }
+
+    final maxX = [
+      _m2fMethodSeries.length,
+      _m2fPigeonEventSeries.length,
+      _m2fPigeonFlutterSeries.length
+    ].reduce((a, b) => a > b ? a : b).toDouble();
+
+    final allValues = [
+      ..._m2fMethodSeries,
+      ..._m2fPigeonEventSeries,
+      ..._m2fPigeonFlutterSeries
+    ];
+    final rawMaxY = allValues.isEmpty ? 0.0 : allValues.reduce((a, b) => a > b ? a : b);
+    final maxY = _roundUp(rawMaxY, step: 20);
+
+    return SizedBox(
+      height: 280,
+      child: LineChart(
+        LineChartData(
+          minX: 0,
+          maxX: maxX == 0 ? 1 : maxX - 1,
+          minY: 0,
+          maxY: maxY,
+          lineTouchData: const LineTouchData(enabled: false),
+          gridData: FlGridData(show: true, horizontalInterval: 20),
+          titlesData: FlTitlesData(
+            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            bottomTitles: AxisTitles(
+              axisNameWidget: const Text('批次編號 (0-based)'),
+              axisNameSize: 22,
+              sideTitles: const SideTitles(showTitles: true, reservedSize: 22, interval: 2),
+            ),
+            leftTitles: AxisTitles(
+              axisNameWidget: const Text('原生 → Flutter 平均耗時 (µs)'),
+              axisNameSize: 22,
+              sideTitles: const SideTitles(
+                showTitles: true,
+                reservedSize: 44,
+                interval: 20,
+              ),
+            ),
+          ),
+          lineBarsData: [
+            if (_m2fMethodSeries.isNotEmpty)
+              LineChartBarData(
+                spots: _spots(_m2fMethodSeries),
+                color: Colors.blue,
+                barWidth: 2,
+                isCurved: false,
+                dotData: const FlDotData(show: false),
+              ),
+            if (_m2fPigeonEventSeries.isNotEmpty)
+              LineChartBarData(
+                spots: _spots(_m2fPigeonEventSeries),
+                color: Colors.green,
+                barWidth: 2,
+                isCurved: false,
+                dotData: const FlDotData(show: false),
+              ),
+            if (_m2fPigeonFlutterSeries.isNotEmpty)
+              LineChartBarData(
+                spots: _spots(_m2fPigeonFlutterSeries),
+                color: Colors.teal,
+                barWidth: 2,
+                isCurved: false,
+                dotData: const FlDotData(show: false),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _legend() {
     Widget chip(Color c, String t) => Row(
           mainAxisSize: MainAxisSize.min,
@@ -264,6 +493,16 @@ class _AutoTestPageState extends State<AutoTestPage> {
                     _summaryRow('Pigeon HostApi', _pigeonSeries),
                     _summaryRow('BasicMessageChannel', _basicSeries),
                     _summaryRow('FFI', _ffiSeries),
+                    const SizedBox(height: 20),
+                    const Divider(),
+                    const SizedBox(height: 8),
+                    const Text('原生 → Flutter'),
+                    const SizedBox(height: 8),
+                    _chartNativeToFlutter(),
+                    const SizedBox(height: 12),
+                    _summaryRow('MethodChannel EventChannel', _m2fMethodSeries),
+                    _summaryRow('Pigeon EventChannelApi', _m2fPigeonEventSeries),
+                    _summaryRow('Pigeon FlutterApi', _m2fPigeonFlutterSeries),
                   ],
                 ),
               ),
@@ -273,5 +512,14 @@ class _AutoTestPageState extends State<AutoTestPage> {
       ),
     );
   }
+}
+
+class _DemoFlutterApi extends CounterFlutterApi {
+  _DemoFlutterApi({required this.onCounterHandler});
+
+  final void Function(Counter counter) onCounterHandler;
+
+  @override
+  void onCounter(Counter counter) => onCounterHandler(counter);
 }
 
