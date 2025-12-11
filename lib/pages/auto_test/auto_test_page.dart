@@ -33,6 +33,11 @@ class _AutoTestPageState extends State<AutoTestPage> {
   final List<double> _ffiSeries = [];
   /// Jacky 推薦加入此測試作為對照組
   final List<double> _dartSeries = [];
+  double _mcTotalMs = 0;
+  double _pigeonTotalMs = 0;
+  double _basicTotalMs = 0;
+  double _ffiTotalMs = 0;
+  double _dartTotalMs = 0;
   final List<double> _m2fMethodSeries = [];
   final List<double> _m2fPigeonEventSeries = [];
   final List<double> _m2fPigeonFlutterSeries = [];
@@ -93,12 +98,15 @@ class _AutoTestPageState extends State<AutoTestPage> {
     required List<double> data,
     required bool enabled,
     required VoidCallback onToggle,
+    required String unit,
+    double? totalMs,
   }) {
     final displayColor = color.withValues(alpha: enabled ? 1 : 0.2);
     final last = data.isNotEmpty ? data.last.toStringAsFixed(1) : '-';
     final avg = data.isNotEmpty
         ? (data.reduce((a, b) => a + b) / data.length).toStringAsFixed(1)
         : '-';
+    final totalText = totalMs != null ? ' | 總計: ${totalMs.toStringAsFixed(1)} ms' : '';
     return InkWell(
       onTap: onToggle,
       borderRadius: BorderRadius.circular(6),
@@ -114,7 +122,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
               ),
             ),
             Text(
-              '最新: $last µs | 平均: $avg µs',
+              '最新: $last $unit | 平均: $avg $unit$totalText',
             ),
           ],
         ),
@@ -174,6 +182,11 @@ class _AutoTestPageState extends State<AutoTestPage> {
       _basicSeries.clear();
       _ffiSeries.clear();
       _dartSeries.clear();
+      _mcTotalMs = 0;
+      _pigeonTotalMs = 0;
+      _basicTotalMs = 0;
+      _ffiTotalMs = 0;
+      _dartTotalMs = 0;
       _m2fMethodSeries.clear();
       _m2fPigeonEventSeries.clear();
       _m2fPigeonFlutterSeries.clear();
@@ -203,6 +216,11 @@ class _AutoTestPageState extends State<AutoTestPage> {
         _basicSeries.add(basic);
         _ffiSeries.add(ffiVal);
         _dartSeries.add(dart);
+        _mcTotalMs += mc * _batchSize / 1000.0;
+        _pigeonTotalMs += pigeon * _batchSize / 1000.0;
+        _basicTotalMs += basic * _batchSize / 1000.0;
+        _ffiTotalMs += ffiVal * _batchSize / 1000.0;
+        _dartTotalMs += dart * _batchSize / 1000.0;
         _status = '進度 ${i + 1}/$_batches';
       });
 
@@ -484,6 +502,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       data: _mcSeries,
                       enabled: _mcEnabled,
                       onToggle: () => setState(() => _mcEnabled = !_mcEnabled),
+                      unit: 'µs',
+                      totalMs: _mcTotalMs,
                     ),
                     _seriesRow(
                       label: 'Pigeon HostApi',
@@ -491,6 +511,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       data: _pigeonSeries,
                       enabled: _pigeonEnabled,
                       onToggle: () => setState(() => _pigeonEnabled = !_pigeonEnabled),
+                      unit: 'µs',
+                      totalMs: _pigeonTotalMs,
                     ),
                     _seriesRow(
                       label: 'BasicMessageChannel',
@@ -498,6 +520,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       data: _basicSeries,
                       enabled: _basicEnabled,
                       onToggle: () => setState(() => _basicEnabled = !_basicEnabled),
+                      unit: 'µs',
+                      totalMs: _basicTotalMs,
                     ),
                     _seriesRow(
                       label: 'FFI',
@@ -505,6 +529,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       data: _ffiSeries,
                       enabled: _ffiEnabled,
                       onToggle: () => setState(() => _ffiEnabled = !_ffiEnabled),
+                      unit: 'µs',
+                      totalMs: _ffiTotalMs,
                     ),
                     _seriesRow(
                       label: 'Pure Dart (baseline)',
@@ -512,6 +538,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       data: _dartSeries,
                       enabled: _dartEnabled,
                       onToggle: () => setState(() => _dartEnabled = !_dartEnabled),
+                      unit: 'µs',
+                      totalMs: _dartTotalMs,
                     ),
                     const SizedBox(height: 20),
                     const Divider(),
@@ -526,6 +554,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       data: _m2fMethodSeries,
                       enabled: _m2fMethodEnabled,
                       onToggle: () => setState(() => _m2fMethodEnabled = !_m2fMethodEnabled),
+                      unit: 'µs',
                     ),
                     _seriesRow(
                       label: 'Pigeon EventChannelApi',
@@ -534,6 +563,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       enabled: _m2fPigeonEventEnabled,
                       onToggle: () =>
                           setState(() => _m2fPigeonEventEnabled = !_m2fPigeonEventEnabled),
+                      unit: 'µs',
                     ),
                     _seriesRow(
                       label: 'Pigeon FlutterApi',
@@ -542,6 +572,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       enabled: _m2fPigeonFlutterEnabled,
                       onToggle: () =>
                           setState(() => _m2fPigeonFlutterEnabled = !_m2fPigeonFlutterEnabled),
+                      unit: 'µs',
                     ),
                   ],
                 ),
