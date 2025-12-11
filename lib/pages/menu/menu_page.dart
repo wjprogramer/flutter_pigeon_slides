@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pigeon_slides/pages/api_doc/api_doc_page.dart';
 import 'package:flutter_pigeon_slides/pages/auto_test/auto_test_page.dart';
 import 'package:flutter_pigeon_slides/pages/demo/demo_page.dart';
-import 'package:flutter_pigeon_slides/pages/performance_plan/performance_plan_page.dart';
 import 'package:flutter_pigeon_slides/pages/readable/readable_page.dart';
 import 'package:flutter_pigeon_slides/pages/settings/settings_page.dart';
+import 'package:flutter_pigeon_slides/pages/qa/qa_section_page.dart';
+import 'package:flutter_pigeon_slides/qa/qa_data.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
@@ -26,9 +27,14 @@ class _MenuPageState extends State<MenuPage> {
       page: (_) => DemoPage(),
       tags: [const _Tag(name: 'new', color: Colors.green)],
     ),
-    _Item(name: 'Performance Plan', page: (_) => PerformancePlanPage()),
     _Item(name: '可讀性 Readable', page: (_) => ReadablePage()),
     _Item(name: 'pigeon 文件 API Doc', page: (_) => ApiDocPage()),
+    ...qaSections.map(
+      (s) => _Item(
+        name: s.title,
+        page: (_) => QaSectionPage(section: s),
+      ),
+    ),
   ];
 
   Widget _button(BuildContext context, _Item item) {
