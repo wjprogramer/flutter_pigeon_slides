@@ -31,6 +31,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
   final List<double> _pigeonSeries = [];
   final List<double> _basicSeries = [];
   final List<double> _ffiSeries = [];
+  /// Jacky 推薦加入此測試作為對照組
+  final List<double> _dartSeries = [];
   final List<double> _m2fMethodSeries = [];
   final List<double> _m2fPigeonEventSeries = [];
   final List<double> _m2fPigeonFlutterSeries = [];
@@ -38,6 +40,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
   bool _pigeonEnabled = true;
   bool _basicEnabled = true;
   bool _ffiEnabled = true;
+  bool _dartEnabled = true;
   bool _m2fMethodEnabled = true;
   bool _m2fPigeonEventEnabled = true;
   bool _m2fPigeonFlutterEnabled = true;
@@ -170,6 +173,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
       _pigeonSeries.clear();
       _basicSeries.clear();
       _ffiSeries.clear();
+      _dartSeries.clear();
       _m2fMethodSeries.clear();
       _m2fPigeonEventSeries.clear();
       _m2fPigeonFlutterSeries.clear();
@@ -188,6 +192,9 @@ class _AutoTestPageState extends State<AutoTestPage> {
       final ffiVal = await _measureAvgMicros(() async {
         _ffi.increment(1);
       });
+      final dart = await _measureAvgMicros(() async {
+        // Pure Dart baseline; do nothing heavy to measure minimal cost.
+      });
 
       if (!_running) break;
       setState(() {
@@ -195,6 +202,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
         _pigeonSeries.add(pigeon);
         _basicSeries.add(basic);
         _ffiSeries.add(ffiVal);
+        _dartSeries.add(dart);
         _status = '進度 ${i + 1}/$_batches';
       });
 
@@ -303,7 +311,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
     if (_mcSeries.isEmpty &&
         _pigeonSeries.isEmpty &&
         _basicSeries.isEmpty &&
-        _ffiSeries.isEmpty) {
+        _ffiSeries.isEmpty &&
+        _dartSeries.isEmpty) {
       return const Text('尚無資料，請先執行自動測試');
     }
 
@@ -311,14 +320,16 @@ class _AutoTestPageState extends State<AutoTestPage> {
       _mcSeries.length,
       _pigeonSeries.length,
       _basicSeries.length,
-      _ffiSeries.length
+      _ffiSeries.length,
+      _dartSeries.length
     ].reduce((a, b) => a > b ? a : b).toDouble();
 
     final allValues = [
       ..._mcSeries,
       ..._pigeonSeries,
       ..._basicSeries,
-      ..._ffiSeries
+      ..._ffiSeries,
+      ..._dartSeries
     ];
     final rawMaxY = allValues.isEmpty ? 0.0 : allValues.reduce((a, b) => a > b ? a : b);
     final maxY = _roundUp(rawMaxY, step: 20);
@@ -360,6 +371,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
               _bar(_basicSeries, Colors.orange, _basicEnabled),
             if (_ffiSeries.isNotEmpty)
               _bar(_ffiSeries, Colors.purple, _ffiEnabled),
+            if (_dartSeries.isNotEmpty)
+              _bar(_dartSeries, Colors.teal, _dartEnabled),
           ],
         ),
       ),
@@ -492,6 +505,13 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       data: _ffiSeries,
                       enabled: _ffiEnabled,
                       onToggle: () => setState(() => _ffiEnabled = !_ffiEnabled),
+                    ),
+                    _seriesRow(
+                      label: 'Pure Dart (baseline)',
+                      color: Colors.teal,
+                      data: _dartSeries,
+                      enabled: _dartEnabled,
+                      onToggle: () => setState(() => _dartEnabled = !_dartEnabled),
                     ),
                     const SizedBox(height: 20),
                     const Divider(),
