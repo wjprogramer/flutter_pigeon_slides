@@ -54,7 +54,7 @@ class _ReadablePageState extends State<ReadablePage> {
           NavigationDelegate(
             onPageFinished: (_) => setState(() => _status = '載入完成'),
             onWebResourceError: (error) {
-              print(error.description);
+              debugPrint(error.description);
               _controller?.loadHtmlString(_fallbackHtml);
               setState(() => _status = '載入失敗，已顯示離線備份');
             },

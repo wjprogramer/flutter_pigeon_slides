@@ -1,4 +1,5 @@
 import 'dart:ffi' as ffi;
+import 'dart:io' show Platform;
 
 import 'package:flutter_pigeon_slides/pigeons/counter.g.dart';
 
@@ -12,7 +13,14 @@ typedef _GetUpdatedAtNative = ffi.Int64 Function();
 typedef _GetUpdatedAtDart = int Function();
 
 class CounterFfi {
-  CounterFfi({ffi.DynamicLibrary? library}) : _lib = library ?? ffi.DynamicLibrary.process() {
+  CounterFfi({ffi.DynamicLibrary? library})
+      : _lib = library ??
+            (() {
+              if (Platform.isAndroid) {
+                return ffi.DynamicLibrary.open('libcounter_ffi.so');
+              }
+              return ffi.DynamicLibrary.process();
+            })() {
     _getCounter = _lib.lookupFunction<_GetCounterNative, _GetCounterDart>('get_counter');
     _addCounter = _lib.lookupFunction<_AddCounterNative, _AddCounterDart>('add_counter');
     _resetCounter = _lib.lookupFunction<_ResetCounterNative, _ResetCounterDart>('reset_counter');
