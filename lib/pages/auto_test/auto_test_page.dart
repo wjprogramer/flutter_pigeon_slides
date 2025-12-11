@@ -501,7 +501,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
                     _chartNativeToFlutter(),
                     const SizedBox(height: 8),
                     _seriesRow(
-                      label: 'MethodChannel EventChannel',
+                      label: 'EventChannel',
                       color: Colors.blue,
                       data: _m2fMethodSeries,
                       enabled: _m2fMethodEnabled,
