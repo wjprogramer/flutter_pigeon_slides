@@ -42,7 +42,7 @@ dependencies:
    git:
      url: https://github.com/wjprogramer/slick_slides
      path: slick_slides
-     ref: 9a878f65c20035b7b01d3468c07ca2517ff9893f
+     ref: e406caaa073985da08994f1564ebea9cbf8aa52e
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

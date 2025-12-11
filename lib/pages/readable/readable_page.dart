@@ -29,6 +29,34 @@ class _ReadablePageState extends State<ReadablePage> {
   static const _docUrl =
       'https://docs.flutter.dev/platform-integration/platform-channels#pigeon';
 
+  Future<void> _highlightAndScroll() async {
+    if (_controller == null) return;
+    const script = r"""
+(function() {
+  const targetRegex = /The\s+generated\s+code\s+is\s+readable/gi;
+  const paragraphs = Array.from(document.querySelectorAll('p'));
+  for (const p of paragraphs) {
+    if (!p.innerText) continue;
+    if (!targetRegex.test(p.innerText)) {
+      targetRegex.lastIndex = 0;
+      continue;
+    }
+    targetRegex.lastIndex = 0;
+    p.style.backgroundColor = '#fff8a6';
+    p.style.color = 'black';
+    // wrap matched segment (tolerate whitespace) with stronger highlight
+    const regex = new RegExp(targetRegex.source, 'gi');
+    p.innerHTML = p.innerHTML.replace(regex, function(m) {
+      return '<span style="background:#ffeb3b;color:#000;font-weight:bold;">' + m + '</span>';
+    });
+    p.scrollIntoView({behavior: 'smooth', block: 'center'});
+    break;
+  }
+})();
+""";
+    await _controller!.runJavaScript(script);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -52,7 +80,10 @@ class _ReadablePageState extends State<ReadablePage> {
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setNavigationDelegate(
           NavigationDelegate(
-            onPageFinished: (_) => setState(() => _status = '載入完成'),
+            onPageFinished: (_) async {
+              setState(() => _status = '載入完成');
+              await _highlightAndScroll();
+            },
             onWebResourceError: (error) {
               debugPrint(error.description);
               _controller?.loadHtmlString(_fallbackHtml);
@@ -111,7 +142,7 @@ class _ReadablePageState extends State<ReadablePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(_status, style: const TextStyle(color: Colors.grey)),
               ),
-            SizedBox(height: 360, child: WebViewWidget(controller: _controller!)),
+            SizedBox(height: 660, child: WebViewWidget(controller: _controller!)),
           ] else
             const Padding(
               padding: EdgeInsets.all(16.0),
