@@ -221,23 +221,36 @@ class _AutoTestPageState extends State<AutoTestPage> {
     await _resetCounters();
     setState(() => _status = '執行中：Flutter → 原生 $_batches 組，每組 $_batchSize 次');
 
+    // ignore: unused_local_variable
+    var dartCounter = 0;
+    final ops = <(String, Future<double> Function())>[
+      ('mc', () => _measureAvgMicros(() => _channels.mcIncrement(1))),
+      ('mcLong', () => _measureAvgMicros(() => _channels.mcLongIncrement(1))),
+      ('pigeon', () => _measureAvgMicros(() => _channels.pigeonIncrement(1))),
+      ('basic', () => _measureAvgMicros(() => _channels.basicEcho({'v': 1}))),
+      ('ffi', () => _measureAvgMicros(() async => _ffi.increment(1))),
+      (
+        'dart',
+        () => _measureAvgMicros(() async {
+          // Pure Dart baseline; minimal成本 (仍做少量運算避免被完全優化掉)
+          dartCounter += 1;
+        }),
+      ),
+    ];
+
     for (var i = 0; i < _batches && _running; i++) {
-      final mc = await _measureAvgMicros(() => _channels.mcIncrement(1));
-      final mcLong = await _measureAvgMicros(
-        () => _channels.mcLongIncrement(1),
-      );
-      final pigeon = await _measureAvgMicros(
-        () => _channels.pigeonIncrement(1),
-      );
-      final basic = await _measureAvgMicros(
-        () => _channels.basicEcho({'v': 1}),
-      );
-      final ffiVal = await _measureAvgMicros(() async {
-        _ffi.increment(1);
-      });
-      final dart = await _measureAvgMicros(() async {
-        // Pure Dart baseline; do nothing heavy to measure minimal cost.
-      });
+      final offset = i % ops.length;
+      final rotated = [...ops.skip(offset), ...ops.take(offset)];
+      final results = <String, double>{};
+      for (final entry in rotated) {
+        results[entry.$1] = await entry.$2();
+      }
+      final mc = results['mc'] ?? 0;
+      final mcLong = results['mcLong'] ?? 0;
+      final pigeon = results['pigeon'] ?? 0;
+      final basic = results['basic'] ?? 0;
+      final ffiVal = results['ffi'] ?? 0;
+      final dart = results['dart'] ?? 0;
 
       if (!_running) break;
       setState(() {
