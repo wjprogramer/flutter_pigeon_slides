@@ -63,6 +63,15 @@ class _AutoTestPageState extends State<AutoTestPage> {
   final List<double> _pigeonFlutterBurst = [];
   Completer<void>? _eventCompleter;
 
+  double _scale(BuildContext context, double base) =>
+      MediaQuery.of(context).textScaler.scale(base);
+
+  double _clamp(double value, double min, double max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+  }
+
   Future<void> _resetCounters() async {
     await _channels.mcReset();
     await _channels.pigeonReset();
@@ -383,8 +392,13 @@ class _AutoTestPageState extends State<AutoTestPage> {
         : allValues.reduce((a, b) => a > b ? a : b);
     final maxY = _roundUp(rawMaxY, step: 20);
 
+    final chartHeight = _clamp(_scale(context, 280), 200, 520);
+    final axisNameSize = _clamp(_scale(context, 22), 16, 44);
+    final leftReserved = _clamp(_scale(context, 40), 28, 80);
+    final bottomReserved = _clamp(_scale(context, 22), 16, 44);
+
     return SizedBox(
-      height: 280,
+      height: chartHeight,
       child: LineChart(
         LineChartData(
           minX: 0,
@@ -412,19 +426,19 @@ class _AutoTestPageState extends State<AutoTestPage> {
             ),
             bottomTitles: AxisTitles(
               axisNameWidget: const Text('批次編號 (0-based)'),
-              axisNameSize: 22,
-              sideTitles: const SideTitles(
+              axisNameSize: axisNameSize,
+              sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 22,
+                reservedSize: bottomReserved,
                 interval: 5,
               ),
             ),
             leftTitles: AxisTitles(
               axisNameWidget: const Text('平均耗時 (µs)'),
-              axisNameSize: 22,
+              axisNameSize: axisNameSize,
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 40,
+                reservedSize: leftReserved,
                 interval: 20,
               ),
             ),
@@ -480,15 +494,16 @@ class _AutoTestPageState extends State<AutoTestPage> {
           maxY: maxY,
           lineTouchData: const LineTouchData(enabled: false),
           gridData: FlGridData(show: true, horizontalInterval: 20),
-          rangeAnnotations: RangeAnnotations(
-            verticalRangeAnnotations: [
-              VerticalRangeAnnotation(
-                x1: -0.5,
-                x2: 1.5,
-                color: Colors.grey.withOpacity(0.12),
-              ),
-            ],
-          ),
+          // TODO: 現在有點問題，但先不管
+          // rangeAnnotations: RangeAnnotations(
+          //   verticalRangeAnnotations: [
+          //     VerticalRangeAnnotation(
+          //       x1: -0.5,
+          //       x2: 1.5,
+          //       color: Colors.grey.withOpacity(0.12),
+          //     ),
+          //   ],
+          // ),
           titlesData: FlTitlesData(
             rightTitles: const AxisTitles(
               sideTitles: SideTitles(showTitles: false),
