@@ -5,6 +5,8 @@ import 'package:flutter_pigeon_slides/counter_channels.dart';
 import 'package:flutter_pigeon_slides/counter_ffi.dart';
 import 'package:flutter_pigeon_slides/pigeons/counter.g.dart';
 
+const _warmup = 10;
+
 class AutoTestPage extends StatefulWidget {
   const AutoTestPage({super.key});
 
@@ -17,7 +19,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
   final _ffi = CounterFfi();
 
   final int _batchSize = 2000;
-  final int _batches = 30;
+  final int _batches = 60;
   final int _eventBurst = 2000;
   final int _eventBatches = 30;
 
@@ -254,19 +256,22 @@ class _AutoTestPageState extends State<AutoTestPage> {
 
       if (!_running) break;
       setState(() {
-        _mcSeries.add(mc);
-        _mcLongSeries.add(mcLong);
-        _pigeonSeries.add(pigeon);
-        _basicSeries.add(basic);
-        _ffiSeries.add(ffiVal);
-        _dartSeries.add(dart);
-        _mcTotalMs += mc * _batchSize / 1000.0;
-        _mcLongTotalMs += mcLong * _batchSize / 1000.0;
-        _pigeonTotalMs += pigeon * _batchSize / 1000.0;
-        _basicTotalMs += basic * _batchSize / 1000.0;
-        _ffiTotalMs += ffiVal * _batchSize / 1000.0;
-        _dartTotalMs += dart * _batchSize / 1000.0;
         _status = '進度 ${i + 1}/$_batches';
+        final include = i >= _warmup;
+        if (include) {
+          _mcSeries.add(mc);
+          _mcLongSeries.add(mcLong);
+          _pigeonSeries.add(pigeon);
+          _basicSeries.add(basic);
+          _ffiSeries.add(ffiVal);
+          _dartSeries.add(dart);
+          _mcTotalMs += mc * _batchSize / 1000.0;
+          _mcLongTotalMs += mcLong * _batchSize / 1000.0;
+          _pigeonTotalMs += pigeon * _batchSize / 1000.0;
+          _basicTotalMs += basic * _batchSize / 1000.0;
+          _ffiTotalMs += ffiVal * _batchSize / 1000.0;
+          _dartTotalMs += dart * _batchSize / 1000.0;
+        }
       });
 
       await Future.delayed(const Duration(milliseconds: 1));
@@ -595,7 +600,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
                   children: [
                     const Text('Flutter → 原生'),
                     const SizedBox(height: 4),
-                    const Text('註：前兩批為 warm-up，不納入比較'),
+                    const Text('註：前 $_warmup 批為 warm-up，不納入比較'),
                     const SizedBox(height: 8),
                     _chart(),
                     const SizedBox(height: 8),
