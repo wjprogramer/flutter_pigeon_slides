@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pigeon_slides/auto_test_results.dart';
 import 'package:flutter_pigeon_slides/counter_channels.dart';
 import 'package:flutter_pigeon_slides/counter_ffi.dart';
 import 'package:flutter_pigeon_slides/pigeons/counter.g.dart';
@@ -148,6 +149,34 @@ class _AutoTestPageState extends State<AutoTestPage> {
   @override
   void initState() {
     super.initState();
+    
+    // 從全局結果加載之前的測試數據
+    final results = AutoTestResults();
+    _mcSeries.clear();
+    _mcSeries.addAll(results.mcSeries);
+    _mcLongSeries.clear();
+    _mcLongSeries.addAll(results.mcLongSeries);
+    _pigeonSeries.clear();
+    _pigeonSeries.addAll(results.pigeonSeries);
+    _basicSeries.clear();
+    _basicSeries.addAll(results.basicSeries);
+    _ffiSeries.clear();
+    _ffiSeries.addAll(results.ffiSeries);
+    _dartSeries.clear();
+    _dartSeries.addAll(results.dartSeries);
+    _mcTotalMs = results.mcTotalMs;
+    _mcLongTotalMs = results.mcLongTotalMs;
+    _pigeonTotalMs = results.pigeonTotalMs;
+    _basicTotalMs = results.basicTotalMs;
+    _ffiTotalMs = results.ffiTotalMs;
+    _dartTotalMs = results.dartTotalMs;
+    _m2fMethodSeries.clear();
+    _m2fMethodSeries.addAll(results.m2fMethodSeries);
+    _m2fPigeonEventSeries.clear();
+    _m2fPigeonEventSeries.addAll(results.m2fPigeonEventSeries);
+    _m2fPigeonFlutterSeries.clear();
+    _m2fPigeonFlutterSeries.addAll(results.m2fPigeonFlutterSeries);
+    
     _methodEventSub = _channels.events().listen((event) {
       if (!_collectMethodEvents || _methodBurst.length >= _expectEvents) return;
       if (event.updatedAt != null) {
@@ -220,6 +249,9 @@ class _AutoTestPageState extends State<AutoTestPage> {
       _pigeonBurst.clear();
       _pigeonFlutterBurst.clear();
     });
+    
+    // 清除全局結果（新測試開始時）
+    AutoTestResults().clear();
 
     await _resetCounters();
     setState(() => _status = '執行中：Flutter → 原生，每個方法 $_batches 組，每組 $_batchSize 次');
@@ -323,6 +355,22 @@ class _AutoTestPageState extends State<AutoTestPage> {
         _ffiTotalMs += tempFfiTotalMs;
         _dartTotalMs += tempDartTotalMs;
       });
+      
+      // 保存結果到全局，避免離開頁面後結果消失
+      AutoTestResults().updateFlutterToNative(
+        mc: _mcSeries,
+        mcLong: _mcLongSeries,
+        pigeon: _pigeonSeries,
+        basic: _basicSeries,
+        ffi: _ffiSeries,
+        dart: _dartSeries,
+        mcTotal: _mcTotalMs,
+        mcLongTotal: _mcLongTotalMs,
+        pigeonTotal: _pigeonTotalMs,
+        basicTotal: _basicTotalMs,
+        ffiTotal: _ffiTotalMs,
+        dartTotal: _dartTotalMs,
+      );
     }
 
     if (_running) {
@@ -435,6 +483,13 @@ class _AutoTestPageState extends State<AutoTestPage> {
         _m2fPigeonEventSeries.addAll(tempM2fPigeonEventSeries);
         _m2fPigeonFlutterSeries.addAll(tempM2fPigeonFlutterSeries);
       });
+      
+      // 保存結果到全局，避免離開頁面後結果消失
+      AutoTestResults().updateNativeToFlutter(
+        method: _m2fMethodSeries,
+        pigeonEvent: _m2fPigeonEventSeries,
+        pigeonFlutter: _m2fPigeonFlutterSeries,
+      );
     }
   }
 
