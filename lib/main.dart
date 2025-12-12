@@ -59,18 +59,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _isHover = ValueNotifier<bool>(false);
+  final _deckController = SlideDeckController(controlsAlwaysVisible: true);
 
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     return MediaQuery(
       data: media.copyWith(textScaler: const TextScaler.linear(1.0)),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          SlideDeck(
-            slides: [
+      child: SlideDeck(
+        controller: _deckController,
+        controlActions: [
+          OutlinedButton(
+            style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(4)),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MenuPage()));
+            },
+            child: const Icon(Icons.menu, color: Colors.white),
+          ),
+        ],
+        slides: [
             FullScreenImageSlide(
               image: const AssetImage('assets/logo-background.jpg'),
               title: 'Pigeon 介紹',
@@ -468,39 +475,6 @@ class _MyHomePageState extends State<MyHomePage> {
             BulletsSlide(title: '', bullets: [], notes: ''),
           ],
         ),
-        PositionedDirectional(
-          start: 0,
-          bottom: 0,
-          child: MouseRegion(
-            onEnter: (_) {
-              _isHover.value = true;
-            },
-            onExit: (_) {
-              _isHover.value = false;
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: ValueListenableBuilder(
-                valueListenable: _isHover,
-                builder: (context, isHover, __) {
-                  return AnimatedOpacity(
-                    duration: const Duration(milliseconds: 200),
-                    opacity: isHover ? 1 : 0.3,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(4)),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MenuPage()));
-                      },
-                      child: Icon(Icons.menu, color: Colors.white),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
+    );
   }
 }
