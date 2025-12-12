@@ -252,9 +252,15 @@ class _AutoTestPageState extends State<AutoTestPage> {
     
     // 清除全局結果（新測試開始時）
     AutoTestResults().clear();
+    
+    // 等待 UI 更新完成，避免影響實驗
+    await Future.delayed(const Duration(milliseconds: 100));
 
     await _resetCounters();
     setState(() => _status = '執行中：Flutter → 原生，每個方法 $_batches 組，每組 $_batchSize 次');
+    
+    // 等待 UI 更新完成，避免影響實驗
+    await Future.delayed(const Duration(milliseconds: 100));
 
     // ignore: unused_local_variable
     var dartCounter = 0;
