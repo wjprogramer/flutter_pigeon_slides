@@ -54,6 +54,10 @@ class AppDelegate: FlutterAppDelegate {
       name: "demo.counter.method",
       binaryMessenger: messenger
     )
+    let methodChannelLong = FlutterMethodChannel(
+      name: "demo.counter.method.long",
+      binaryMessenger: messenger
+    )
     methodChannel.setMethodCallHandler { [weak self] call, result in
       guard let self else { return }
       switch call.method {
@@ -86,8 +90,52 @@ class AppDelegate: FlutterAppDelegate {
           result(FlutterError(code: "bad-args", message: "Missing count", details: nil))
           return
         }
-        emitPigeonEvents(count: count)
+        emitPigeonWatchEvents(count: count)
         result(nil)
+      case "emitPigeonWatchEvents":
+        guard let args = call.arguments as? [String: Any], let count = args["count"] as? Int else {
+          result(FlutterError(code: "bad-args", message: "Missing count", details: nil))
+          return
+        }
+        emitPigeonWatchEvents(count: count)
+        result(nil)
+      case "emitPigeonFlutterEvents":
+        guard let args = call.arguments as? [String: Any], let count = args["count"] as? Int else {
+          result(FlutterError(code: "bad-args", message: "Missing count", details: nil))
+          return
+        }
+        emitPigeonFlutterEvents(count: count)
+        result(nil)
+      default:
+        result(FlutterMethodNotImplemented)
+      }
+    }
+    methodChannelLong.setMethodCallHandler { [weak self] call, result in
+      guard let self else { return }
+      switch call.method {
+      case "getCounter":
+        result([
+          "value": self.methodCounterValue,
+          "updatedAt": self.methodCounterUpdatedAt
+        ])
+      case "increment":
+        guard let args = call.arguments as? [String: Any], let delta = args["delta"] as? Int else {
+          result(FlutterError(code: "bad-args", message: "Missing delta", details: nil))
+          return
+        }
+        methodCounterValue += Int64(delta)
+        methodCounterUpdatedAt = nowMs()
+        result([
+          "value": methodCounterValue,
+          "updatedAt": methodCounterUpdatedAt
+        ])
+      case "reset":
+        methodCounterValue = 0
+        methodCounterUpdatedAt = nowMs()
+        result([
+          "value": methodCounterValue,
+          "updatedAt": methodCounterUpdatedAt
+        ])
       default:
         result(FlutterMethodNotImplemented)
       }
@@ -130,11 +178,24 @@ class AppDelegate: FlutterAppDelegate {
   }
 
   private func emitPigeonEvents(count: Int) {
+    emitPigeonWatchEvents(count: count)
+    emitPigeonFlutterEvents(count: count)
+  }
+
+  private func emitPigeonWatchEvents(count: Int) {
     guard count > 0 else { return }
     let ts = nowMs()
     let counter = Counter(value: pigeonCounterValue, updatedAt: ts)
     for _ in 0..<count {
       pigeonWatchHandler?.push(counter)
+    }
+  }
+
+  private func emitPigeonFlutterEvents(count: Int) {
+    guard count > 0 else { return }
+    let ts = nowMs()
+    let counter = Counter(value: pigeonCounterValue, updatedAt: ts)
+    for _ in 0..<count {
       flutterApi?.onCounter(counter: counter, completion: { _ in })
     }
   }

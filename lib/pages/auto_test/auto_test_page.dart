@@ -33,11 +33,13 @@ class _AutoTestPageState extends State<AutoTestPage> {
   final List<double> _ffiSeries = [];
   /// Jacky 推薦加入此測試作為對照組
   final List<double> _dartSeries = [];
+  final List<double> _mcLongSeries = [];
   double _mcTotalMs = 0;
   double _pigeonTotalMs = 0;
   double _basicTotalMs = 0;
   double _ffiTotalMs = 0;
   double _dartTotalMs = 0;
+  double _mcLongTotalMs = 0;
   final List<double> _m2fMethodSeries = [];
   final List<double> _m2fPigeonEventSeries = [];
   final List<double> _m2fPigeonFlutterSeries = [];
@@ -46,6 +48,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
   bool _basicEnabled = true;
   bool _ffiEnabled = true;
   bool _dartEnabled = true;
+  bool _mcLongEnabled = true;
   bool _m2fMethodEnabled = true;
   bool _m2fPigeonEventEnabled = true;
   bool _m2fPigeonFlutterEnabled = true;
@@ -182,11 +185,13 @@ class _AutoTestPageState extends State<AutoTestPage> {
       _basicSeries.clear();
       _ffiSeries.clear();
       _dartSeries.clear();
+      _mcLongSeries.clear();
       _mcTotalMs = 0;
       _pigeonTotalMs = 0;
       _basicTotalMs = 0;
       _ffiTotalMs = 0;
       _dartTotalMs = 0;
+      _mcLongTotalMs = 0;
       _m2fMethodSeries.clear();
       _m2fPigeonEventSeries.clear();
       _m2fPigeonFlutterSeries.clear();
@@ -200,6 +205,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
 
     for (var i = 0; i < _batches && _running; i++) {
       final mc = await _measureAvgMicros(() => _channels.mcIncrement(1));
+      final mcLong = await _measureAvgMicros(() => _channels.mcLongIncrement(1));
       final pigeon = await _measureAvgMicros(() => _channels.pigeonIncrement(1));
       final basic = await _measureAvgMicros(() => _channels.basicEcho({'v': 1}));
       final ffiVal = await _measureAvgMicros(() async {
@@ -212,11 +218,13 @@ class _AutoTestPageState extends State<AutoTestPage> {
       if (!_running) break;
       setState(() {
         _mcSeries.add(mc);
+        _mcLongSeries.add(mcLong);
         _pigeonSeries.add(pigeon);
         _basicSeries.add(basic);
         _ffiSeries.add(ffiVal);
         _dartSeries.add(dart);
         _mcTotalMs += mc * _batchSize / 1000.0;
+        _mcLongTotalMs += mcLong * _batchSize / 1000.0;
         _pigeonTotalMs += pigeon * _batchSize / 1000.0;
         _basicTotalMs += basic * _batchSize / 1000.0;
         _ffiTotalMs += ffiVal * _batchSize / 1000.0;
@@ -276,7 +284,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
     _expectEvents = _eventBurst;
     _pigeonBurst.clear();
     _eventCompleter = Completer<void>();
-    await _channels.pigeonEmitEvents(_eventBurst);
+    await _channels.pigeonEmitWatchEvents(_eventBurst);
     await _waitOrTimeout(_eventCompleter!);
     _collectPigeonEvents = false;
     final avg =
@@ -293,7 +301,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
     _expectEvents = _eventBurst;
     _pigeonFlutterBurst.clear();
     _eventCompleter = Completer<void>();
-    await _channels.pigeonEmitEvents(_eventBurst);
+    await _channels.pigeonEmitFlutterEvents(_eventBurst);
     await _waitOrTimeout(_eventCompleter!);
     _collectPigeonFlutter = false;
     final avg = _pigeonFlutterBurst.isEmpty
@@ -327,6 +335,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
 
   Widget _chart() {
     if (_mcSeries.isEmpty &&
+        _mcLongSeries.isEmpty &&
         _pigeonSeries.isEmpty &&
         _basicSeries.isEmpty &&
         _ffiSeries.isEmpty &&
@@ -336,6 +345,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
 
     final maxX = [
       _mcSeries.length,
+      _mcLongSeries.length,
       _pigeonSeries.length,
       _basicSeries.length,
       _ffiSeries.length,
@@ -344,6 +354,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
 
     final allValues = [
       ..._mcSeries,
+      ..._mcLongSeries,
       ..._pigeonSeries,
       ..._basicSeries,
       ..._ffiSeries,
@@ -383,6 +394,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
           lineBarsData: [
             if (_mcSeries.isNotEmpty)
               _bar(_mcSeries, Colors.blue, _mcEnabled),
+            if (_mcLongSeries.isNotEmpty)
+              _bar(_mcLongSeries, Colors.indigo, _mcLongEnabled),
             if (_pigeonSeries.isNotEmpty)
               _bar(_pigeonSeries, Colors.green, _pigeonEnabled),
             if (_basicSeries.isNotEmpty)
@@ -504,6 +517,15 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       onToggle: () => setState(() => _mcEnabled = !_mcEnabled),
                       unit: 'µs',
                       totalMs: _mcTotalMs,
+                    ),
+                    _seriesRow(
+                      label: 'MethodChannel (long keys)',
+                      color: Colors.indigo,
+                      data: _mcLongSeries,
+                      enabled: _mcLongEnabled,
+                      onToggle: () => setState(() => _mcLongEnabled = !_mcLongEnabled),
+                      unit: 'µs',
+                      totalMs: _mcLongTotalMs,
                     ),
                     _seriesRow(
                       label: 'Pigeon HostApi',

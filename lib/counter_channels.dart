@@ -22,16 +22,19 @@ Counter _decodeCounter(dynamic data) {
 class CounterChannels {
   CounterChannels({
     MethodChannel? methodChannel,
+    MethodChannel? methodChannelLongKeys,
     BasicMessageChannel<dynamic>? basicMessageChannel,
     EventChannel? eventChannel,
     CounterHostApi? pigeonApi,
   })  : _methodChannel = methodChannel ?? const MethodChannel('demo.counter.method'),
+        _methodChannelLong = methodChannelLongKeys ?? const MethodChannel('demo.counter.method.long'),
         _basicMessageChannel = basicMessageChannel ??
             const BasicMessageChannel<dynamic>('demo.counter.basic', StandardMessageCodec()),
         _eventChannel = eventChannel ?? const EventChannel('demo.counter.events'),
         _pigeonApi = pigeonApi ?? CounterHostApi();
 
   final MethodChannel _methodChannel;
+  final MethodChannel _methodChannelLong;
   final BasicMessageChannel<dynamic> _basicMessageChannel;
   final EventChannel _eventChannel;
   final CounterHostApi _pigeonApi;
@@ -43,6 +46,16 @@ class CounterChannels {
       _decodeCounter(await _methodChannel.invokeMethod('increment', {'delta': delta}));
 
   Future<Counter> mcReset() async => _decodeCounter(await _methodChannel.invokeMethod('reset'));
+
+  // MethodChannel-based (long keys payload)
+  Future<Counter> mcLongGetCounter() async =>
+      _decodeCounter(await _methodChannelLong.invokeMethod('getCounter'));
+
+  Future<Counter> mcLongIncrement(int delta) async =>
+      _decodeCounter(await _methodChannelLong.invokeMethod('increment', {'delta': delta}));
+
+  Future<Counter> mcLongReset() async =>
+      _decodeCounter(await _methodChannelLong.invokeMethod('reset'));
 
   // Pigeon-based
   Future<Counter> pigeonGetCounter() => _pigeonApi.getCounter();
@@ -68,7 +81,12 @@ class CounterChannels {
   // Native -> Flutter burst emit (for perf test)
   Future<void> mcEmitEvents(int count) => _methodChannel.invokeMethod('emitMethodEvents', {'count': count});
 
-  Future<void> pigeonEmitEvents(int count) =>
-      _methodChannel.invokeMethod('emitPigeonEvents', {'count': count});
+  // Pigeon EventChannelApi burst
+  Future<void> pigeonEmitWatchEvents(int count) =>
+      _methodChannel.invokeMethod('emitPigeonWatchEvents', {'count': count});
+
+  // Pigeon FlutterApi burst
+  Future<void> pigeonEmitFlutterEvents(int count) =>
+      _methodChannel.invokeMethod('emitPigeonFlutterEvents', {'count': count});
 }
 
