@@ -81,12 +81,12 @@ class CounterChannels {
   // Native -> Flutter burst emit (for perf test)
   Future<void> mcEmitEvents(int count) => _methodChannel.invokeMethod('emitMethodEvents', {'count': count});
 
-  // Pigeon EventChannelApi burst
+  // Pigeon EventChannelApi burst (使用獨立的 channel 避免影響公平比較)
   Future<void> pigeonEmitWatchEvents(int count) =>
-      _methodChannel.invokeMethod('emitPigeonWatchEvents', {'count': count});
+      const MethodChannel('demo.counter.pigeon.test').invokeMethod('emitPigeonWatchEvents', {'count': count});
 
-  // Pigeon FlutterApi burst
+  // Pigeon FlutterApi burst (使用獨立的 channel 避免影響公平比較)
   Future<void> pigeonEmitFlutterEvents(int count) =>
-      _methodChannel.invokeMethod('emitPigeonFlutterEvents', {'count': count});
+      const MethodChannel('demo.counter.pigeon.test').invokeMethod('emitPigeonFlutterEvents', {'count': count});
 }
 

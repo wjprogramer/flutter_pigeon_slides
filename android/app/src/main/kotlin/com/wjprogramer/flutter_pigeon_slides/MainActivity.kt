@@ -40,6 +40,9 @@ class MainActivity : FlutterActivity(), CounterHostApi {
     // MethodChannel with long keys payload
     val methodChannelLong = MethodChannel(messenger, "demo.counter.method.long")
     methodChannelLong.setMethodCallHandler(::handleMethodCallLong)
+    // MethodChannel for Pigeon experimental methods (獨立出來避免影響公平比較)
+    val pigeonTestChannel = MethodChannel(messenger, "demo.counter.pigeon.test")
+    pigeonTestChannel.setMethodCallHandler(::handlePigeonTestCall)
 
     // BasicMessageChannel echo
     val basicChannel = BasicMessageChannel<Any?>(messenger, "demo.counter.basic", StandardMessageCodec.INSTANCE)
@@ -89,27 +92,11 @@ class MainActivity : FlutterActivity(), CounterHostApi {
       "reset" -> {
         methodCounterValue = 0
         methodCounterUpdatedAt = nowMs()
-        notifyMethodEvent(methodCounterValue, methodCounterUpdatedAt)
         result.success(makeCounterPayload(methodCounterValue, methodCounterUpdatedAt))
       }
       "emitMethodEvents" -> {
         val count = (call.argument<Number>("count") ?: 0).toInt()
         emitMethodEvents(count)
-        result.success(null)
-      }
-      "emitPigeonEvents" -> {
-        val count = (call.argument<Number>("count") ?: 0).toInt()
-        emitPigeonWatchEvents(count)
-        result.success(null)
-      }
-      "emitPigeonWatchEvents" -> {
-        val count = (call.argument<Number>("count") ?: 0).toInt()
-        emitPigeonWatchEvents(count)
-        result.success(null)
-      }
-      "emitPigeonFlutterEvents" -> {
-        val count = (call.argument<Number>("count") ?: 0).toInt()
-        emitPigeonFlutterEvents(count)
         result.success(null)
       }
       else -> result.notImplemented()
@@ -129,6 +116,27 @@ class MainActivity : FlutterActivity(), CounterHostApi {
         methodCounterLongValue = 0
         methodCounterLongUpdatedAt = nowMs()
         result.success(makeCounterPayloadLong(methodCounterLongValue, methodCounterLongUpdatedAt))
+      }
+      else -> result.notImplemented()
+    }
+  }
+
+  private fun handlePigeonTestCall(call: MethodCall, result: MethodChannel.Result) {
+    when (call.method) {
+      "emitPigeonEvents" -> {
+        val count = (call.argument<Number>("count") ?: 0).toInt()
+        emitPigeonWatchEvents(count)
+        result.success(null)
+      }
+      "emitPigeonWatchEvents" -> {
+        val count = (call.argument<Number>("count") ?: 0).toInt()
+        emitPigeonWatchEvents(count)
+        result.success(null)
+      }
+      "emitPigeonFlutterEvents" -> {
+        val count = (call.argument<Number>("count") ?: 0).toInt()
+        emitPigeonFlutterEvents(count)
+        result.success(null)
       }
       else -> result.notImplemented()
     }
@@ -177,8 +185,5 @@ class MainActivity : FlutterActivity(), CounterHostApi {
   override fun reset() {
     pigeonCounterValue = 0
     pigeonCounterUpdatedAt = nowMs()
-    val counter = Counter(pigeonCounterValue, pigeonCounterUpdatedAt)
-    pigeonWatchHandler?.push(counter)
-    flutterApi?.onCounter(counter) { }
   }
 }

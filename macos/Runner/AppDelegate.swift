@@ -62,6 +62,11 @@ class AppDelegate: FlutterAppDelegate {
       name: "demo.counter.method.long",
       binaryMessenger: messenger
     )
+    // MethodChannel for Pigeon experimental methods (獨立出來避免影響公平比較)
+    let pigeonTestChannel = FlutterMethodChannel(
+      name: "demo.counter.pigeon.test",
+      binaryMessenger: messenger
+    )
     methodChannel.setMethodCallHandler { [weak self] call, result in
       guard let self else { return }
       switch call.method {
@@ -80,7 +85,6 @@ class AppDelegate: FlutterAppDelegate {
         methodCounterValue = 0
         methodCounterUpdatedAt = nowMs()
         let payload = makeCounterPayload(value: methodCounterValue, updatedAt: methodCounterUpdatedAt)
-        notifyMethodEvent(value: methodCounterValue, updatedAt: methodCounterUpdatedAt)
         result(payload)
       case "emitMethodEvents":
         guard let args = call.arguments as? [String: Any], let count = args["count"] as? Int else {
@@ -88,27 +92,6 @@ class AppDelegate: FlutterAppDelegate {
           return
         }
         emitMethodEvents(count: count)
-        result(nil)
-      case "emitPigeonEvents":
-        guard let args = call.arguments as? [String: Any], let count = args["count"] as? Int else {
-          result(FlutterError(code: "bad-args", message: "Missing count", details: nil))
-          return
-        }
-        emitPigeonWatchEvents(count: count)
-        result(nil)
-      case "emitPigeonWatchEvents":
-        guard let args = call.arguments as? [String: Any], let count = args["count"] as? Int else {
-          result(FlutterError(code: "bad-args", message: "Missing count", details: nil))
-          return
-        }
-        emitPigeonWatchEvents(count: count)
-        result(nil)
-      case "emitPigeonFlutterEvents":
-        guard let args = call.arguments as? [String: Any], let count = args["count"] as? Int else {
-          result(FlutterError(code: "bad-args", message: "Missing count", details: nil))
-          return
-        }
-        emitPigeonFlutterEvents(count: count)
         result(nil)
       default:
         result(FlutterMethodNotImplemented)
@@ -170,6 +153,36 @@ class AppDelegate: FlutterAppDelegate {
     pigeonWatchHandler = watchHandler
 
     flutterApi = CounterFlutterApi(binaryMessenger: messenger)
+
+    // Pigeon test channel handler
+    pigeonTestChannel.setMethodCallHandler { [weak self] call, result in
+      guard let self else { return }
+      switch call.method {
+      case "emitPigeonEvents":
+        guard let args = call.arguments as? [String: Any], let count = args["count"] as? Int else {
+          result(FlutterError(code: "bad-args", message: "Missing count", details: nil))
+          return
+        }
+        emitPigeonWatchEvents(count: count)
+        result(nil)
+      case "emitPigeonWatchEvents":
+        guard let args = call.arguments as? [String: Any], let count = args["count"] as? Int else {
+          result(FlutterError(code: "bad-args", message: "Missing count", details: nil))
+          return
+        }
+        emitPigeonWatchEvents(count: count)
+        result(nil)
+      case "emitPigeonFlutterEvents":
+        guard let args = call.arguments as? [String: Any], let count = args["count"] as? Int else {
+          result(FlutterError(code: "bad-args", message: "Missing count", details: nil))
+          return
+        }
+        emitPigeonFlutterEvents(count: count)
+        result(nil)
+      default:
+        result(FlutterMethodNotImplemented)
+      }
+    }
   }
 
   private func emitMethodEvents(count: Int) {
@@ -220,9 +233,6 @@ extension AppDelegate: CounterHostApi {
   func reset() throws {
     pigeonCounterValue = 0
     pigeonCounterUpdatedAt = nowMs()
-    let counter = Counter(value: pigeonCounterValue, updatedAt: pigeonCounterUpdatedAt)
-    pigeonWatchHandler?.push(counter)
-    flutterApi?.onCounter(counter: counter, completion: { _ in })
   }
 
   func emitEvent() throws {
