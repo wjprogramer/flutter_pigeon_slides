@@ -31,6 +31,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
   final List<double> _pigeonSeries = [];
   final List<double> _basicSeries = [];
   final List<double> _ffiSeries = [];
+
   /// Jacky 推薦加入此測試作為對照組
   final List<double> _dartSeries = [];
   final List<double> _mcLongSeries = [];
@@ -77,8 +78,11 @@ class _AutoTestPageState extends State<AutoTestPage> {
     return sw.elapsedMicroseconds / _batchSize;
   }
 
-  List<FlSpot> _spots(List<double> data) =>
-      data.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList();
+  List<FlSpot> _spots(List<double> data) => data
+      .asMap()
+      .entries
+      .map((e) => FlSpot(e.key.toDouble(), e.value))
+      .toList();
 
   double _roundUp(double value, {double step = 20}) {
     if (value <= 0) return step;
@@ -109,7 +113,9 @@ class _AutoTestPageState extends State<AutoTestPage> {
     final avg = data.isNotEmpty
         ? (data.reduce((a, b) => a + b) / data.length).toStringAsFixed(1)
         : '-';
-    final totalText = totalMs != null ? ' | 總計: ${totalMs.toStringAsFixed(1)} ms' : '';
+    final totalText = totalMs != null
+        ? ' | 總計: ${totalMs.toStringAsFixed(1)} ms'
+        : '';
     return InkWell(
       onTap: onToggle,
       borderRadius: BorderRadius.circular(6),
@@ -119,14 +125,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
           children: [
             Container(width: 12, height: 12, color: displayColor),
             const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                label,
-              ),
-            ),
-            Text(
-              '最新: $last $unit | 平均: $avg $unit$totalText',
-            ),
+            Expanded(child: Text(label)),
+            Text('最新: $last $unit | 平均: $avg $unit$totalText'),
           ],
         ),
       ),
@@ -140,7 +140,9 @@ class _AutoTestPageState extends State<AutoTestPage> {
       if (!_collectMethodEvents || _methodBurst.length >= _expectEvents) return;
       if (event.updatedAt != null) {
         final now = DateTime.now().millisecondsSinceEpoch.toDouble();
-        _methodBurst.add((now - event.updatedAt!.toDouble()).clamp(0, double.maxFinite));
+        _methodBurst.add(
+          (now - event.updatedAt!.toDouble()).clamp(0, double.maxFinite),
+        );
         if (_methodBurst.length >= _expectEvents) {
           _eventCompleter?.complete();
         }
@@ -150,22 +152,29 @@ class _AutoTestPageState extends State<AutoTestPage> {
       if (!_collectPigeonEvents || _pigeonBurst.length >= _expectEvents) return;
       if (event.updatedAt != null) {
         final now = DateTime.now().millisecondsSinceEpoch.toDouble();
-        _pigeonBurst.add((now - event.updatedAt!.toDouble()).clamp(0, double.maxFinite));
+        _pigeonBurst.add(
+          (now - event.updatedAt!.toDouble()).clamp(0, double.maxFinite),
+        );
         if (_pigeonBurst.length >= _expectEvents) {
           _eventCompleter?.complete();
         }
       }
     });
-    _channels.setupFlutterApi(_DemoFlutterApi(onCounterHandler: (counter) {
-      if (_collectPigeonFlutter && _pigeonFlutterBurst.length < _expectEvents) {
-        final now = DateTime.now().millisecondsSinceEpoch.toDouble();
-        final ts = (counter.updatedAt?.toDouble() ?? now);
-        _pigeonFlutterBurst.add((now - ts).clamp(0, double.maxFinite));
-        if (_pigeonFlutterBurst.length >= _expectEvents) {
-          _eventCompleter?.complete();
-        }
-      }
-    }));
+    _channels.setupFlutterApi(
+      _DemoFlutterApi(
+        onCounterHandler: (counter) {
+          if (_collectPigeonFlutter &&
+              _pigeonFlutterBurst.length < _expectEvents) {
+            final now = DateTime.now().millisecondsSinceEpoch.toDouble();
+            final ts = (counter.updatedAt?.toDouble() ?? now);
+            _pigeonFlutterBurst.add((now - ts).clamp(0, double.maxFinite));
+            if (_pigeonFlutterBurst.length >= _expectEvents) {
+              _eventCompleter?.complete();
+            }
+          }
+        },
+      ),
+    );
   }
 
   @override
@@ -205,9 +214,15 @@ class _AutoTestPageState extends State<AutoTestPage> {
 
     for (var i = 0; i < _batches && _running; i++) {
       final mc = await _measureAvgMicros(() => _channels.mcIncrement(1));
-      final mcLong = await _measureAvgMicros(() => _channels.mcLongIncrement(1));
-      final pigeon = await _measureAvgMicros(() => _channels.pigeonIncrement(1));
-      final basic = await _measureAvgMicros(() => _channels.basicEcho({'v': 1}));
+      final mcLong = await _measureAvgMicros(
+        () => _channels.mcLongIncrement(1),
+      );
+      final pigeon = await _measureAvgMicros(
+        () => _channels.pigeonIncrement(1),
+      );
+      final basic = await _measureAvgMicros(
+        () => _channels.basicEcho({'v': 1}),
+      );
       final ffiVal = await _measureAvgMicros(() async {
         _ffi.increment(1);
       });
@@ -270,8 +285,9 @@ class _AutoTestPageState extends State<AutoTestPage> {
     await _channels.mcEmitEvents(_eventBurst);
     await _waitOrTimeout(_eventCompleter!);
     _collectMethodEvents = false;
-    final avg =
-        _methodBurst.isEmpty ? 0.0 : (_methodBurst.reduce((a, b) => a + b) / _methodBurst.length);
+    final avg = _methodBurst.isEmpty
+        ? 0.0
+        : (_methodBurst.reduce((a, b) => a + b) / _methodBurst.length);
     _methodBurst.clear();
     _eventCompleter = null;
     return avg;
@@ -287,8 +303,9 @@ class _AutoTestPageState extends State<AutoTestPage> {
     await _channels.pigeonEmitWatchEvents(_eventBurst);
     await _waitOrTimeout(_eventCompleter!);
     _collectPigeonEvents = false;
-    final avg =
-        _pigeonBurst.isEmpty ? 0.0 : (_pigeonBurst.reduce((a, b) => a + b) / _pigeonBurst.length);
+    final avg = _pigeonBurst.isEmpty
+        ? 0.0
+        : (_pigeonBurst.reduce((a, b) => a + b) / _pigeonBurst.length);
     _pigeonBurst.clear();
     _eventCompleter = null;
     return avg;
@@ -306,7 +323,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
     _collectPigeonFlutter = false;
     final avg = _pigeonFlutterBurst.isEmpty
         ? 0.0
-        : (_pigeonFlutterBurst.reduce((a, b) => a + b) / _pigeonFlutterBurst.length);
+        : (_pigeonFlutterBurst.reduce((a, b) => a + b) /
+              _pigeonFlutterBurst.length);
     _pigeonFlutterBurst.clear();
     _eventCompleter = null;
     return avg;
@@ -349,7 +367,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
       _pigeonSeries.length,
       _basicSeries.length,
       _ffiSeries.length,
-      _dartSeries.length
+      _dartSeries.length,
     ].reduce((a, b) => a > b ? a : b).toDouble();
 
     final allValues = [
@@ -358,9 +376,11 @@ class _AutoTestPageState extends State<AutoTestPage> {
       ..._pigeonSeries,
       ..._basicSeries,
       ..._ffiSeries,
-      ..._dartSeries
+      ..._dartSeries,
     ];
-    final rawMaxY = allValues.isEmpty ? 0.0 : allValues.reduce((a, b) => a > b ? a : b);
+    final rawMaxY = allValues.isEmpty
+        ? 0.0
+        : allValues.reduce((a, b) => a > b ? a : b);
     final maxY = _roundUp(rawMaxY, step: 20);
 
     return SizedBox(
@@ -373,13 +393,31 @@ class _AutoTestPageState extends State<AutoTestPage> {
           maxY: maxY,
           lineTouchData: const LineTouchData(enabled: false),
           gridData: FlGridData(show: true, horizontalInterval: 20),
+          // TODO: 現在有點問題，但先不管
+          // rangeAnnotations: RangeAnnotations(
+          //   verticalRangeAnnotations: [
+          //     VerticalRangeAnnotation(
+          //       x1: -0.5,
+          //       x2: 1.5,
+          //       color: Colors.grey.withOpacity(0.12),
+          //     ),
+          //   ],
+          // ),
           titlesData: FlTitlesData(
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
             bottomTitles: AxisTitles(
               axisNameWidget: const Text('批次編號 (0-based)'),
               axisNameSize: 22,
-              sideTitles: const SideTitles(showTitles: true, reservedSize: 22, interval: 5),
+              sideTitles: const SideTitles(
+                showTitles: true,
+                reservedSize: 22,
+                interval: 5,
+              ),
             ),
             leftTitles: AxisTitles(
               axisNameWidget: const Text('平均耗時 (µs)'),
@@ -392,8 +430,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
             ),
           ),
           lineBarsData: [
-            if (_mcSeries.isNotEmpty)
-              _bar(_mcSeries, Colors.blue, _mcEnabled),
+            if (_mcSeries.isNotEmpty) _bar(_mcSeries, Colors.blue, _mcEnabled),
             if (_mcLongSeries.isNotEmpty)
               _bar(_mcLongSeries, Colors.indigo, _mcLongEnabled),
             if (_pigeonSeries.isNotEmpty)
@@ -420,15 +457,17 @@ class _AutoTestPageState extends State<AutoTestPage> {
     final maxX = [
       _m2fMethodSeries.length,
       _m2fPigeonEventSeries.length,
-      _m2fPigeonFlutterSeries.length
+      _m2fPigeonFlutterSeries.length,
     ].reduce((a, b) => a > b ? a : b).toDouble();
 
     final allValues = [
       ..._m2fMethodSeries,
       ..._m2fPigeonEventSeries,
-      ..._m2fPigeonFlutterSeries
+      ..._m2fPigeonFlutterSeries,
     ];
-    final rawMaxY = allValues.isEmpty ? 0.0 : allValues.reduce((a, b) => a > b ? a : b);
+    final rawMaxY = allValues.isEmpty
+        ? 0.0
+        : allValues.reduce((a, b) => a > b ? a : b);
     final maxY = _roundUp(rawMaxY, step: 20);
 
     return SizedBox(
@@ -441,13 +480,30 @@ class _AutoTestPageState extends State<AutoTestPage> {
           maxY: maxY,
           lineTouchData: const LineTouchData(enabled: false),
           gridData: FlGridData(show: true, horizontalInterval: 20),
+          rangeAnnotations: RangeAnnotations(
+            verticalRangeAnnotations: [
+              VerticalRangeAnnotation(
+                x1: -0.5,
+                x2: 1.5,
+                color: Colors.grey.withOpacity(0.12),
+              ),
+            ],
+          ),
           titlesData: FlTitlesData(
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
             bottomTitles: AxisTitles(
               axisNameWidget: const Text('批次編號 (0-based)'),
               axisNameSize: 22,
-              sideTitles: const SideTitles(showTitles: true, reservedSize: 22, interval: 2),
+              sideTitles: const SideTitles(
+                showTitles: true,
+                reservedSize: 22,
+                interval: 2,
+              ),
             ),
             leftTitles: AxisTitles(
               axisNameWidget: const Text('原生 → Flutter 平均耗時 (µs)'),
@@ -465,7 +521,11 @@ class _AutoTestPageState extends State<AutoTestPage> {
             if (_m2fPigeonEventSeries.isNotEmpty)
               _bar(_m2fPigeonEventSeries, Colors.green, _m2fPigeonEventEnabled),
             if (_m2fPigeonFlutterSeries.isNotEmpty)
-              _bar(_m2fPigeonFlutterSeries, Colors.teal, _m2fPigeonFlutterEnabled),
+              _bar(
+                _m2fPigeonFlutterSeries,
+                Colors.teal,
+                _m2fPigeonFlutterEnabled,
+              ),
           ],
         ),
       ),
@@ -506,6 +566,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('Flutter → 原生'),
+                    const SizedBox(height: 4),
+                    const Text('註：前兩批為 warm-up，不納入比較'),
                     const SizedBox(height: 8),
                     _chart(),
                     const SizedBox(height: 8),
@@ -523,7 +585,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       color: Colors.indigo,
                       data: _mcLongSeries,
                       enabled: _mcLongEnabled,
-                      onToggle: () => setState(() => _mcLongEnabled = !_mcLongEnabled),
+                      onToggle: () =>
+                          setState(() => _mcLongEnabled = !_mcLongEnabled),
                       unit: 'µs',
                       totalMs: _mcLongTotalMs,
                     ),
@@ -532,7 +595,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       color: Colors.green,
                       data: _pigeonSeries,
                       enabled: _pigeonEnabled,
-                      onToggle: () => setState(() => _pigeonEnabled = !_pigeonEnabled),
+                      onToggle: () =>
+                          setState(() => _pigeonEnabled = !_pigeonEnabled),
                       unit: 'µs',
                       totalMs: _pigeonTotalMs,
                     ),
@@ -541,7 +605,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       color: Colors.orange,
                       data: _basicSeries,
                       enabled: _basicEnabled,
-                      onToggle: () => setState(() => _basicEnabled = !_basicEnabled),
+                      onToggle: () =>
+                          setState(() => _basicEnabled = !_basicEnabled),
                       unit: 'µs',
                       totalMs: _basicTotalMs,
                     ),
@@ -550,7 +615,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       color: Colors.purple,
                       data: _ffiSeries,
                       enabled: _ffiEnabled,
-                      onToggle: () => setState(() => _ffiEnabled = !_ffiEnabled),
+                      onToggle: () =>
+                          setState(() => _ffiEnabled = !_ffiEnabled),
                       unit: 'µs',
                       totalMs: _ffiTotalMs,
                     ),
@@ -559,7 +625,8 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       color: Colors.teal,
                       data: _dartSeries,
                       enabled: _dartEnabled,
-                      onToggle: () => setState(() => _dartEnabled = !_dartEnabled),
+                      onToggle: () =>
+                          setState(() => _dartEnabled = !_dartEnabled),
                       unit: 'µs',
                       totalMs: _dartTotalMs,
                     ),
@@ -575,7 +642,9 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       color: Colors.blue,
                       data: _m2fMethodSeries,
                       enabled: _m2fMethodEnabled,
-                      onToggle: () => setState(() => _m2fMethodEnabled = !_m2fMethodEnabled),
+                      onToggle: () => setState(
+                        () => _m2fMethodEnabled = !_m2fMethodEnabled,
+                      ),
                       unit: 'µs',
                     ),
                     _seriesRow(
@@ -583,8 +652,9 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       color: Colors.green,
                       data: _m2fPigeonEventSeries,
                       enabled: _m2fPigeonEventEnabled,
-                      onToggle: () =>
-                          setState(() => _m2fPigeonEventEnabled = !_m2fPigeonEventEnabled),
+                      onToggle: () => setState(
+                        () => _m2fPigeonEventEnabled = !_m2fPigeonEventEnabled,
+                      ),
                       unit: 'µs',
                     ),
                     _seriesRow(
@@ -592,8 +662,10 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       color: Colors.teal,
                       data: _m2fPigeonFlutterSeries,
                       enabled: _m2fPigeonFlutterEnabled,
-                      onToggle: () =>
-                          setState(() => _m2fPigeonFlutterEnabled = !_m2fPigeonFlutterEnabled),
+                      onToggle: () => setState(
+                        () => _m2fPigeonFlutterEnabled =
+                            !_m2fPigeonFlutterEnabled,
+                      ),
                       unit: 'µs',
                     ),
                   ],
@@ -615,4 +687,3 @@ class _DemoFlutterApi extends CounterFlutterApi {
   @override
   void onCounter(Counter counter) => onCounterHandler(counter);
 }
-
