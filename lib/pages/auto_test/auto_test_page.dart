@@ -222,18 +222,19 @@ class _AutoTestPageState extends State<AutoTestPage> {
     });
 
     await _resetCounters();
-    setState(() => _status = '執行中：Flutter → 原生 $_batches 組，每組 $_batchSize 次');
+    setState(() => _status = '執行中：Flutter → 原生，每個方法 $_batches 組，每組 $_batchSize 次');
 
     // ignore: unused_local_variable
     var dartCounter = 0;
-    final ops = <(String, Future<double> Function())>[
-      ('mc', () => _measureAvgMicros(() => _channels.mcIncrement(1))),
-      ('mcLong', () => _measureAvgMicros(() => _channels.mcLongIncrement(1))),
-      ('pigeon', () => _measureAvgMicros(() => _channels.pigeonIncrement(1))),
-      ('basic', () => _measureAvgMicros(() => _channels.basicEcho({'v': 1}))),
-      ('ffi', () => _measureAvgMicros(() async => _ffi.increment(1))),
+    final ops = <(String, String, Future<double> Function())>[
+      ('mc', 'MethodChannel', () => _measureAvgMicros(() => _channels.mcIncrement(1))),
+      ('mcLong', 'MethodChannel (long keys)', () => _measureAvgMicros(() => _channels.mcLongIncrement(1))),
+      ('pigeon', 'Pigeon HostApi', () => _measureAvgMicros(() => _channels.pigeonIncrement(1))),
+      ('basic', 'BasicMessageChannel', () => _measureAvgMicros(() => _channels.basicEcho({'v': 1}))),
+      ('ffi', 'FFI', () => _measureAvgMicros(() async => _ffi.increment(1))),
       (
         'dart',
+        'Pure Dart (baseline)',
         () => _measureAvgMicros(() async {
           // Pure Dart baseline; minimal成本 (仍做少量運算避免被完全優化掉)
           dartCounter += 1;
@@ -241,44 +242,87 @@ class _AutoTestPageState extends State<AutoTestPage> {
       ),
     ];
 
-    for (var i = 0; i < _batches && _running; i++) {
-      // 每個批次開始前重置所有狀態，確保公平比較
-      await _resetCounters();
-      
-      final offset = i % ops.length;
-      final rotated = [...ops.skip(offset), ...ops.take(offset)];
-      final results = <String, double>{};
-      for (final entry in rotated) {
-        results[entry.$1] = await entry.$2();
-      }
-      final mc = results['mc'] ?? 0;
-      final mcLong = results['mcLong'] ?? 0;
-      final pigeon = results['pigeon'] ?? 0;
-      final basic = results['basic'] ?? 0;
-      final ffiVal = results['ffi'] ?? 0;
-      final dart = results['dart'] ?? 0;
+    // 使用臨時變數收集結果，避免執行過程中的 setState 影響性能測試
+    final tempMcSeries = <double>[];
+    final tempMcLongSeries = <double>[];
+    final tempPigeonSeries = <double>[];
+    final tempBasicSeries = <double>[];
+    final tempFfiSeries = <double>[];
+    final tempDartSeries = <double>[];
+    double tempMcTotalMs = 0;
+    double tempMcLongTotalMs = 0;
+    double tempPigeonTotalMs = 0;
+    double tempBasicTotalMs = 0;
+    double tempFfiTotalMs = 0;
+    double tempDartTotalMs = 0;
 
+    // 每個方法連續執行完整的批次，避免執行順序影響結果
+    for (final op in ops) {
       if (!_running) break;
-      setState(() {
-        _status = '進度 ${i + 1}/$_batches';
-        final include = i >= _warmup;
+      
+      final opKey = op.$1;
+      final opFunc = op.$3;
+      
+      for (var batchIdx = 0; batchIdx < _batches && _running; batchIdx++) {
+        // 每個批次開始前重置所有狀態
+        await _resetCounters();
+        
+        // 執行該方法的測量（不觸發 setState）
+        final result = await opFunc();
+        
+        if (!_running) break;
+        
+        // 收集結果到臨時變數（不觸發 setState）
+        final include = batchIdx >= _warmup;
         if (include) {
-          _mcSeries.add(mc);
-          _mcLongSeries.add(mcLong);
-          _pigeonSeries.add(pigeon);
-          _basicSeries.add(basic);
-          _ffiSeries.add(ffiVal);
-          _dartSeries.add(dart);
-          _mcTotalMs += mc * _batchSize / 1000.0;
-          _mcLongTotalMs += mcLong * _batchSize / 1000.0;
-          _pigeonTotalMs += pigeon * _batchSize / 1000.0;
-          _basicTotalMs += basic * _batchSize / 1000.0;
-          _ffiTotalMs += ffiVal * _batchSize / 1000.0;
-          _dartTotalMs += dart * _batchSize / 1000.0;
+          switch (opKey) {
+            case 'mc':
+              tempMcSeries.add(result);
+              tempMcTotalMs += result * _batchSize / 1000.0;
+              break;
+            case 'mcLong':
+              tempMcLongSeries.add(result);
+              tempMcLongTotalMs += result * _batchSize / 1000.0;
+              break;
+            case 'pigeon':
+              tempPigeonSeries.add(result);
+              tempPigeonTotalMs += result * _batchSize / 1000.0;
+              break;
+            case 'basic':
+              tempBasicSeries.add(result);
+              tempBasicTotalMs += result * _batchSize / 1000.0;
+              break;
+            case 'ffi':
+              tempFfiSeries.add(result);
+              tempFfiTotalMs += result * _batchSize / 1000.0;
+              break;
+            case 'dart':
+              tempDartSeries.add(result);
+              tempDartTotalMs += result * _batchSize / 1000.0;
+              break;
+          }
         }
-      });
 
-      await Future.delayed(const Duration(milliseconds: 1));
+        await Future.delayed(const Duration(milliseconds: 1));
+      }
+    }
+
+    // 執行完成後，一次性更新 UI（避免執行過程中的 setState 影響性能測試）
+    if (mounted && _running) {
+      setState(() {
+        _mcSeries.addAll(tempMcSeries);
+        _mcLongSeries.addAll(tempMcLongSeries);
+        _pigeonSeries.addAll(tempPigeonSeries);
+        _basicSeries.addAll(tempBasicSeries);
+        _ffiSeries.addAll(tempFfiSeries);
+        _dartSeries.addAll(tempDartSeries);
+        _mcTotalMs += tempMcTotalMs;
+        _mcLongTotalMs += tempMcLongTotalMs;
+        _pigeonTotalMs += tempPigeonTotalMs;
+        _basicTotalMs += tempBasicTotalMs;
+        _ffiTotalMs += tempFfiTotalMs;
+        _dartTotalMs += tempDartTotalMs;
+      });
     }
 
     if (_running) {
@@ -362,22 +406,34 @@ class _AutoTestPageState extends State<AutoTestPage> {
   }
 
   Future<void> _runNativeToFlutter() async {
-    setState(() {
-      _status = '準備中...（原生 → Flutter）';
-    });
-    _m2fMethodSeries.clear();
-    _m2fPigeonEventSeries.clear();
-    _m2fPigeonFlutterSeries.clear();
+    if (!_running) return;
+    
+    // 使用臨時變數收集結果，避免執行過程中的 setState 影響性能測試
+    final tempM2fMethodSeries = <double>[];
+    final tempM2fPigeonEventSeries = <double>[];
+    final tempM2fPigeonFlutterSeries = <double>[];
+    
     for (var i = 0; i < _eventBatches && _running; i++) {
-      setState(() => _status = '原生 → Flutter 進度 ${i + 1}/$_eventBatches');
       final m = await _measureMethodToFlutter();
       final pe = await _measurePigeonEventToFlutter();
       final pf = await _measurePigeonFlutterApiToFlutter();
       if (!_running) break;
+      
+      // 收集結果到臨時變數（不觸發 setState）
+      final include = i >= _warmup;
+      if (include) {
+        tempM2fMethodSeries.add(m);
+        tempM2fPigeonEventSeries.add(pe);
+        tempM2fPigeonFlutterSeries.add(pf);
+      }
+    }
+    
+    // 執行完成後，一次性更新 UI（避免執行過程中的 setState 影響性能測試）
+    if (mounted && _running) {
       setState(() {
-        _m2fMethodSeries.add(m);
-        _m2fPigeonEventSeries.add(pe);
-        _m2fPigeonFlutterSeries.add(pf);
+        _m2fMethodSeries.addAll(tempM2fMethodSeries);
+        _m2fPigeonEventSeries.addAll(tempM2fPigeonEventSeries);
+        _m2fPigeonFlutterSeries.addAll(tempM2fPigeonFlutterSeries);
       });
     }
   }
