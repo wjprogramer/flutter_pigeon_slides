@@ -76,6 +76,7 @@ class _AutoTestPageState extends State<AutoTestPage> {
 
   Future<void> _resetCounters() async {
     await _channels.mcReset();
+    await _channels.mcLongReset();
     await _channels.pigeonReset();
     _ffi.reset();
   }
@@ -241,6 +242,9 @@ class _AutoTestPageState extends State<AutoTestPage> {
     ];
 
     for (var i = 0; i < _batches && _running; i++) {
+      // 每個批次開始前重置所有狀態，確保公平比較
+      await _resetCounters();
+      
       final offset = i % ops.length;
       final rotated = [...ops.skip(offset), ...ops.take(offset)];
       final results = <String, double>{};

@@ -11,8 +11,13 @@ import io.flutter.plugin.common.StandardMessageCodec
 import kotlin.system.measureTimeMillis
 
 class MainActivity : FlutterActivity(), CounterHostApi {
+  // MethodChannel state (short keys)
   private var methodCounterValue: Long = 0
   private var methodCounterUpdatedAt: Long = 0
+
+  // MethodChannel state (long keys) - 獨立狀態以避免互相影響
+  private var methodCounterLongValue: Long = 0
+  private var methodCounterLongUpdatedAt: Long = 0
 
   private var pigeonCounterValue: Long = 0
   private var pigeonCounterUpdatedAt: Long = 0
@@ -113,17 +118,17 @@ class MainActivity : FlutterActivity(), CounterHostApi {
 
   private fun handleMethodCallLong(call: MethodCall, result: MethodChannel.Result) {
     when (call.method) {
-      "getCounter" -> result.success(makeCounterPayloadLong(methodCounterValue, methodCounterUpdatedAt))
+      "getCounter" -> result.success(makeCounterPayloadLong(methodCounterLongValue, methodCounterLongUpdatedAt))
       "increment" -> {
         val delta = (call.argument<Number>("delta") ?: 0).toLong()
-        methodCounterValue += delta
-        methodCounterUpdatedAt = nowMs()
-        result.success(makeCounterPayloadLong(methodCounterValue, methodCounterUpdatedAt))
+        methodCounterLongValue += delta
+        methodCounterLongUpdatedAt = nowMs()
+        result.success(makeCounterPayloadLong(methodCounterLongValue, methodCounterLongUpdatedAt))
       }
       "reset" -> {
-        methodCounterValue = 0
-        methodCounterUpdatedAt = nowMs()
-        result.success(makeCounterPayloadLong(methodCounterValue, methodCounterUpdatedAt))
+        methodCounterLongValue = 0
+        methodCounterLongUpdatedAt = nowMs()
+        result.success(makeCounterPayloadLong(methodCounterLongValue, methodCounterLongUpdatedAt))
       }
       else -> result.notImplemented()
     }

@@ -4,9 +4,13 @@ import Foundation
 
 @main
 class AppDelegate: FlutterAppDelegate {
-  // MethodChannel state
+  // MethodChannel state (short keys)
   private var methodCounterValue: Int64 = 0
   private var methodCounterUpdatedAt: Int64 = 0
+
+  // MethodChannel state (long keys) - 獨立狀態以避免互相影響
+  private var methodCounterLongValue: Int64 = 0
+  private var methodCounterLongUpdatedAt: Int64 = 0
 
   // Pigeon state
   private var pigeonCounterValue: Int64 = 0
@@ -115,26 +119,26 @@ class AppDelegate: FlutterAppDelegate {
       switch call.method {
       case "getCounter":
         result([
-          "value": self.methodCounterValue,
-          "updatedAt": self.methodCounterUpdatedAt
+          "value": self.methodCounterLongValue,
+          "updatedAt": self.methodCounterLongUpdatedAt
         ])
       case "increment":
         guard let args = call.arguments as? [String: Any], let delta = args["delta"] as? Int else {
           result(FlutterError(code: "bad-args", message: "Missing delta", details: nil))
           return
         }
-        methodCounterValue += Int64(delta)
-        methodCounterUpdatedAt = nowMs()
+        methodCounterLongValue += Int64(delta)
+        methodCounterLongUpdatedAt = nowMs()
         result([
-          "value": methodCounterValue,
-          "updatedAt": methodCounterUpdatedAt
+          "value": methodCounterLongValue,
+          "updatedAt": methodCounterLongUpdatedAt
         ])
       case "reset":
-        methodCounterValue = 0
-        methodCounterUpdatedAt = nowMs()
+        methodCounterLongValue = 0
+        methodCounterLongUpdatedAt = nowMs()
         result([
-          "value": methodCounterValue,
-          "updatedAt": methodCounterUpdatedAt
+          "value": methodCounterLongValue,
+          "updatedAt": methodCounterLongUpdatedAt
         ])
       default:
         result(FlutterMethodNotImplemented)
