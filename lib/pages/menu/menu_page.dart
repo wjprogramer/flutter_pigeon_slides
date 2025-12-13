@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pigeon_slides/pages/api_doc/api_doc_page.dart';
+import 'package:flutter_pigeon_slides/pages/analysis_aspects/analysis_aspects_page.dart';
 import 'package:flutter_pigeon_slides/pages/auto_test/auto_test_page.dart';
 import 'package:flutter_pigeon_slides/pages/demo/demo_page.dart';
 import 'package:flutter_pigeon_slides/pages/readable/readable_page.dart';
@@ -17,6 +18,11 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   final _controller = TextEditingController();
   final _allItems = <_Item>[
+    _Item(
+      name: '分析面向',
+      page: (_) => const AnalysisAspectsPage(),
+      tags: [const _Tag(name: '入口', color: Colors.blue)],
+    ),
     _Item(
       name: 'Auto Perf Runner',
       page: (_) => const AutoTestPage(),
