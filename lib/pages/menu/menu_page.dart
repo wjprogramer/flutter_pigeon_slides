@@ -5,6 +5,7 @@ import 'package:flutter_pigeon_slides/pages/analysis_aspects/analysis_aspects_pa
 import 'package:flutter_pigeon_slides/pages/auto_test/auto_test_page.dart';
 import 'package:flutter_pigeon_slides/pages/compile_time_safety/compile_time_safety_page.dart';
 import 'package:flutter_pigeon_slides/pages/demo/demo_page.dart';
+import 'package:flutter_pigeon_slides/pages/host_api_testing/host_api_testing_page.dart';
 import 'package:flutter_pigeon_slides/pages/learning_curve/learning_curve_page.dart';
 import 'package:flutter_pigeon_slides/pages/maintainability/maintainability_page.dart';
 import 'package:flutter_pigeon_slides/pages/readable/readable_page.dart';
@@ -42,6 +43,7 @@ class _MenuPageState extends State<MenuPage> {
     _Item(name: '學習曲線', page: (_) => const LearningCurvePage()),
     _Item(name: '可維護性', page: (_) => const MaintainabilityPage()),
     _Item(name: '編譯期檢查', page: (_) => const CompileTimeSafetyPage()),
+    _Item(name: 'HostApi 測試介紹', page: (_) => const HostApiTestingPage()),
     _Item(name: 'Pigeon API 分析', page: (_) => const ApiAnalysisPage()),
     _Item(name: '活躍度與趨勢', page: (_) => const TrendingPage()),
     _Item(name: 'pigeon 文件 API Doc', page: (_) => ApiDocPage()),
