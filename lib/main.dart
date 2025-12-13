@@ -337,6 +337,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           CodeSlideWithBackground(
             title: '使用 Pigeon - Host',
+            language: 'kotlin',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonBasicCode_Host.formattedCode(),
             transition: _defaultTransition,
@@ -604,10 +605,41 @@ class _MyHomePageState extends State<MyHomePage> {
             //                     fontSize: 36,
             //                   ),
           ),
-          BulletsSlide(title: '', bullets: [], notes: ''),
-          BulletsSlide(title: '', bullets: [], notes: ''),
-          BulletsSlide(title: '', bullets: [], notes: ''),
-          BulletsSlide(title: '', bullets: [], notes: ''),
+          BulletsSlide(
+            theme: MyThemes.lightTheme,
+            title: '何時使用 Pigeon vs Standard Channels',
+            bullets: [
+              '✨ 建議使用 Pigeon：',
+              '   • 需要型別安全的複雜資料結構',
+              '   • 多平台需要一致介面',
+              '   • 團隊協作，需要明確契約',
+              '   • API 會持續演進',
+              '',
+              '⚡ 可考慮 Standard Channels：',
+              '   • 極簡單的一次性需求',
+              '   • PoC 快速驗證',
+              '   • 已有穩定的手寫實作',
+            ],
+            transition: _defaultTransition,
+            notes:
+                '這是一個建議，不是絕對規則。重點是根據團隊情況和專案需求來選擇。',
+          ),
+          BulletsSlide(
+            theme: MyThemes.lightTheme,
+            title: '總結',
+            bullets: [
+              '✅ 型別安全：編譯期檢查，減少 runtime 錯誤',
+              '✅ 開發效率：減少樣板程式碼，提升開發速度',
+              '✅ 錯誤處理：統一的錯誤封裝格式',
+              '✅ 可維護性：介面即契約，兩邊保持一致',
+              '✅ 可讀性：介面定義清晰，生成碼完整',
+              '',
+              '💡 建議：新專案或新 API 優先考慮 Pigeon',
+            ],
+            transition: _defaultTransition,
+            notes:
+                '總結 Pigeon 的核心優勢，幫助聽眾記住重點。',
+          ),
         ],
       ),
     );
