@@ -19,18 +19,52 @@ void main() async {
 
 const _defaultTransition = SlickFadeTransition(color: Colors.black);
 
+/// 產生四個方向的文字陰影效果（右下、左上、右上、左下）
+///
+/// [offset] 陰影的偏移距離
+/// [blurRadius] 陰影的模糊半徑
+/// [opacity] 陰影的透明度（0.0-1.0）
+List<Shadow> createTextShadows({
+  double offset = 2.0,
+  double blurRadius = 4.0,
+  double opacity = 0.8,
+}) {
+  final color = Color.fromRGBO(0, 0, 0, opacity);
+  return [
+    Shadow(
+      offset: Offset(offset, offset), // 右下
+      blurRadius: blurRadius,
+      color: color,
+    ),
+    Shadow(
+      offset: Offset(-offset, -offset), // 左上
+      blurRadius: blurRadius,
+      color: color,
+    ),
+    Shadow(
+      offset: Offset(offset, -offset), // 右上
+      blurRadius: blurRadius,
+      color: color,
+    ),
+    Shadow(
+      offset: Offset(-offset, offset), // 左下
+      blurRadius: blurRadius,
+      color: color,
+    ),
+  ];
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Slick Slides Demo',
+      title: 'Pigeon 介紹',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
-          brightness: Brightness.dark,
+          seedColor: Colors.blue,
+          brightness: Brightness.light,
         ),
         useMaterial3: true,
       ),
@@ -83,16 +117,76 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         slides: [
-          FullScreenImageSlide(
-            image: const AssetImage('assets/logo-background.jpg'),
-            title: 'Pigeon 介紹',
-            subtitle: '型別安全、維護性高與原生溝通',
-            alignment: const Alignment(0.6, 0.0),
-            theme: const SlideThemeData.darkAlt(),
+          Slide(
+            theme: const SlideThemeData.light(),
             transition: _defaultTransition,
+            builder: (context) {
+              final theme = SlideTheme.of(context)!;
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  Positioned.fill(
+                    child: Image(
+                      image: const AssetImage(
+                        'assets/pigeon_cover_by_ai_improve_resolution.jpg',
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Padding(
+                    padding: theme.borderPadding,
+                    child: Align(
+                      alignment: const Alignment(0.0, 1),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          DefaultTextStyle(
+                            style: theme.textTheme.title.copyWith(
+                              shadows: createTextShadows(
+                                blurRadius: 40,
+                                offset: 5,
+                                opacity: 0.2,
+                              ),
+                            ),
+                            textAlign: TextAlign.center,
+                            child: const Text('Pigeon 介紹'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: DefaultTextStyle(
+                              style: theme.textTheme.subtitle.copyWith(
+                                shadows: createTextShadows(
+                                  blurRadius: 40,
+                                  offset: 5,
+                                  opacity: 0.2,
+                                ),
+                              ),
+                              textAlign: TextAlign.center,
+                              child: GradientText(
+                                gradient: theme.textTheme.subtitleGradient,
+                                child: const Text('型別安全、維護性高與原生溝通'),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+            onPrecache: (context) async {
+              await precacheImage(
+                const AssetImage(
+                  'assets/pigeon_cover_by_ai_improve_resolution.jpg',
+                ),
+                context,
+              );
+            },
           ),
           BulletsSlide.rich(
-            theme: const SlideThemeData.dark(),
+            theme: const SlideThemeData.light(),
             title: TextSpan(text: '與原生溝通的方式'),
             bulletByBullet: true,
             bullets: [
