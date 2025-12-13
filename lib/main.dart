@@ -108,6 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: SlideDeck(
         theme: MyThemes.lightTheme,
         controller: _deckController,
+        showPageNumber: true,
         controlActions: [
           OutlinedButton(
             style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(4)),
@@ -118,6 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             child: const Icon(Icons.menu, color: Colors.white),
           ),
+          const SizedBox(width: 8),
+          SlideOverviewButton(controller: _deckController),
         ],
         slides: [
           Slide(
@@ -621,8 +624,7 @@ class _MyHomePageState extends State<MyHomePage> {
               '   • 已有穩定的手寫實作',
             ],
             transition: _defaultTransition,
-            notes:
-                '這是一個建議，不是絕對規則。重點是根據團隊情況和專案需求來選擇。',
+            notes: '這是一個建議，不是絕對規則。重點是根據團隊情況和專案需求來選擇。',
           ),
           BulletsSlide(
             theme: MyThemes.lightTheme,
@@ -637,8 +639,7 @@ class _MyHomePageState extends State<MyHomePage> {
               '💡 建議：新專案或新 API 優先考慮 Pigeon',
             ],
             transition: _defaultTransition,
-            notes:
-                '總結 Pigeon 的核心優勢，幫助聽眾記住重點。',
+            notes: '總結 Pigeon 的核心優勢，幫助聽眾記住重點。',
           ),
         ],
       ),
