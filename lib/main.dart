@@ -104,6 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return MediaQuery(
       data: media.copyWith(textScaler: const TextScaler.linear(1.0)),
       child: SlideDeck(
+        theme: MyThemes.lightTheme,
         controller: _deckController,
         controlActions: [
           OutlinedButton(
@@ -118,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         slides: [
           Slide(
-            theme: const SlideThemeData.light(),
+            theme: MyThemes.lightTheme,
             transition: _defaultTransition,
             builder: (context) {
               final theme = SlideTheme.of(context)!;
@@ -156,6 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             padding: const EdgeInsets.only(top: 20.0),
                             child: DefaultTextStyle(
                               style: theme.textTheme.subtitle.copyWith(
+                                color: Colors.white,
                                 shadows: createTextShadows(
                                   blurRadius: 40,
                                   offset: 5,
@@ -186,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           BulletsSlide.rich(
-            theme: const SlideThemeData.light(),
+            theme: MyThemes.lightTheme,
             title: TextSpan(text: '與原生溝通的方式'),
             bulletByBullet: true,
             bullets: [
@@ -242,6 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 '',
           ),
           BulletsSlide(
+            theme: MyThemes.lightTheme,
             title: 'Platform Channels',
             image: const AssetImage('assets/PlatformChannels.png'),
             bullets: [
@@ -277,7 +280,7 @@ class _MyHomePageState extends State<MyHomePage> {
             image: const AssetImage('assets/flutter_logo.webp'),
             transition: _defaultTransition,
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: '使用 Platform Channels - Client',
             theme: MyThemes.codeTheme,
             formattedCode:
@@ -285,7 +288,7 @@ class _MyHomePageState extends State<MyHomePage> {
             notes: 'Create the Flutter platform client',
             transition: _defaultTransition,
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: '使用 Platform Channels - Host',
             theme: MyThemes.codeTheme,
             formattedCode:
@@ -294,7 +297,7 @@ class _MyHomePageState extends State<MyHomePage> {
             notes: 'Create the Flutter platform Host',
             transition: _defaultTransition,
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: '使用 Pigeon - Interface',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonBasicCode_Interface.formattedCode(),
@@ -322,42 +325,42 @@ class _MyHomePageState extends State<MyHomePage> {
                 ''
                 '如果設了自動處理，這個就不會是缺點，因為有多人會僅單純因為 intl_utils auto save 要多跑一道指令而棄用呢?',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: '使用 Pigeon - Client',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonBasicCode_Client.formattedCode(),
             transition: _defaultTransition,
             notes: '',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: '使用 Pigeon - Host',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonBasicCode_Host.formattedCode(),
             transition: _defaultTransition,
             notes: '',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: 'Pigeon Generated - Client',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Client.importCode(),
             transition: _defaultTransition,
             notes: '可以注意到沒有 import 特別的套件，所以相依性很低',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: 'Pigeon Generated - Client',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Client.platformError(),
             transition: _defaultTransition,
             notes: 'just utils',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: 'Pigeon Generated - Client',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Client.deepEqualsCode(),
             transition: _defaultTransition,
             notes: 'just utils',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: 'Pigeon Generated - Client',
             theme: MyThemes.getCodeTheme(fontSize: 17),
             formattedCode: PigeonGeneratedCode_Client.deviceInfoCode(),
@@ -365,7 +368,7 @@ class _MyHomePageState extends State<MyHomePage> {
             notes:
                 '有清掉一些換行、改成 arrow return function、清掉 if 的 curly brace，不然塞不下簡報',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: 'Pigeon Generated - Client',
             theme: MyThemes.getCodeTheme(fontSize: 20),
             formattedCode: PigeonGeneratedCode_Client.codecCode(),
@@ -378,7 +381,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 '代表 pigeon 都會在傳給原生的時候把 int 當成 Long\n\n'
                 '',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: 'Pigeon Generated - Client',
             theme: MyThemes.getCodeTheme(fontSize: 24),
             formattedCode: PigeonGeneratedCode_Client.deviceApiCode(),
@@ -390,21 +393,21 @@ class _MyHomePageState extends State<MyHomePage> {
               whyMessageChannelSuffixExistContent,
             ].join('\n\n========================\n\n'),
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: 'Pigeon Generated - Host',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Host.importCode(),
             transition: _defaultTransition,
             notes: '',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: 'Pigeon Generated - Host',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Host.errorCode(),
             transition: _defaultTransition,
             notes: '',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: 'Pigeon Generated - Host',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Host.codecCode(),
@@ -422,21 +425,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 ''
                 'StandardCodec 預設是支援 JSON 的資料類型',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: 'Pigeon Generated - Host',
             theme: MyThemes.getCodeTheme(fontSize: 17),
             formattedCode: PigeonGeneratedCode_Host.deviceInfoCode(),
             transition: _defaultTransition,
             notes: '',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: 'Pigeon Generated - Host',
             theme: MyThemes.getCodeTheme(fontSize: 20),
             formattedCode: PigeonGeneratedCode_Host.pigeonUtils(),
             transition: _defaultTransition,
             notes: '有減少一些換行、刪除一些 `{}`、省略一些不重要的，不然塞不下簡報',
           ),
-          AnimatedCodeSlide(
+          CodeSlideWithBackground(
             title: 'Pigeon Generated - Host',
             theme: MyThemes.getCodeTheme(fontSize: 20),
             formattedCode: PigeonGeneratedCode_Host.deviceApiCode(),
@@ -444,7 +447,7 @@ class _MyHomePageState extends State<MyHomePage> {
             notes: '刪除一些註解',
           ),
           Slide(
-            theme: SlideThemeData.dark(),
+            theme: MyThemes.lightTheme,
             builder: (BuildContext context) {
               var theme = SlideTheme.of(context)!;
 
@@ -549,7 +552,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 '兩邊介面一致，編譯期就能發現錯誤。',
           ),
           BulletsSlide(
-            theme: SlideThemeData.dark(),
+            theme: MyThemes.lightTheme,
             title: '開發速度',
             bullets: [
               '減少樣板程式碼，可以減少開發時間',
