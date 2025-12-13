@@ -12,7 +12,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // SlickSlides 同時會初始化 Highlighter (pkg: syntax_highlight)
-  await SlickSlides.initialize();
+  await SlickSlides.initialize(
+    languages: ['dart', 'yaml', 'serverpod_protocol', 'kotlin', 'swift'],
+  );
 
   runApp(const MyApp());
 }
@@ -290,6 +292,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           CodeSlideWithBackground(
             title: '使用 Platform Channels - Host',
+            language: 'kotlin',
             theme: MyThemes.codeTheme,
             formattedCode:
                 PlatformChannelMethodChannelCode_Host.formattedCode(),
@@ -362,7 +365,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           CodeSlideWithBackground(
             title: 'Pigeon Generated - Client',
-            theme: MyThemes.getCodeTheme(fontSize: 17),
+            theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Client.deviceInfoCode(),
             transition: _defaultTransition,
             notes:
@@ -370,7 +373,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           CodeSlideWithBackground(
             title: 'Pigeon Generated - Client',
-            theme: MyThemes.getCodeTheme(fontSize: 20),
+            theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Client.codecCode(),
             transition: _defaultTransition,
             notes:
@@ -383,7 +386,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           CodeSlideWithBackground(
             title: 'Pigeon Generated - Client',
-            theme: MyThemes.getCodeTheme(fontSize: 24),
+            theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Client.deviceApiCode(),
             transition: _defaultTransition,
             notes: [
@@ -395,6 +398,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           CodeSlideWithBackground(
             title: 'Pigeon Generated - Host',
+            language: 'kotlin',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Host.importCode(),
             transition: _defaultTransition,
@@ -402,6 +406,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           CodeSlideWithBackground(
             title: 'Pigeon Generated - Host',
+            language: 'kotlin',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Host.errorCode(),
             transition: _defaultTransition,
@@ -409,6 +414,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           CodeSlideWithBackground(
             title: 'Pigeon Generated - Host',
+            language: 'kotlin',
             theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Host.codecCode(),
             transition: _defaultTransition,
@@ -427,21 +433,24 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           CodeSlideWithBackground(
             title: 'Pigeon Generated - Host',
-            theme: MyThemes.getCodeTheme(fontSize: 17),
+            language: 'kotlin',
+            theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Host.deviceInfoCode(),
             transition: _defaultTransition,
             notes: '',
           ),
           CodeSlideWithBackground(
             title: 'Pigeon Generated - Host',
-            theme: MyThemes.getCodeTheme(fontSize: 20),
+            language: 'kotlin',
+            theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Host.pigeonUtils(),
             transition: _defaultTransition,
             notes: '有減少一些換行、刪除一些 `{}`、省略一些不重要的，不然塞不下簡報',
           ),
           CodeSlideWithBackground(
             title: 'Pigeon Generated - Host',
-            theme: MyThemes.getCodeTheme(fontSize: 20),
+            language: 'kotlin',
+            theme: MyThemes.codeTheme,
             formattedCode: PigeonGeneratedCode_Host.deviceApiCode(),
             transition: _defaultTransition,
             notes: '刪除一些註解',

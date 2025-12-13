@@ -9,58 +9,55 @@ class CodeSlideWithBackground extends Slide {
     String? subtitle,
     required List<FormattedCode> formattedCode,
     String language = 'dart',
-    String? notes,
-    SlickTransition? transition,
-    SlideThemeData? theme,
-    Duration? autoplayDuration,
-    Source? audioSource,
+    super.notes,
+    super.transition,
+    super.theme,
+    super.autoplayDuration,
+    super.audioSource,
   }) : super.withSubSlides(
-          builder: (context, index) {
-            var highlightedLines = formattedCode[index].highlightedLines;
-            var code = formattedCode[index].code;
+         builder: (context, index) {
+           var highlightedLines = formattedCode[index].highlightedLines;
+           var code = formattedCode[index].code;
+           const maxAnimationDuration = Duration(milliseconds: 800);
 
-            Widget content;
-            if (index == 0) {
-              content = ColoredCode(
-                code: code,
-                language: language,
-                highlightedLines: highlightedLines,
-              );
-            } else {
-              content = ColoredCode(
-                animateFromCode: formattedCode[index - 1].code,
-                code: code,
-                language: language,
-                highlightedLines: highlightedLines,
-                animateHighlightedLines: true,
-              );
-            }
+           Widget content;
+           if (index == 0) {
+             content = ColoredCode(
+               code: code,
+               language: language,
+               highlightedLines: highlightedLines,
+               maxAnimationDuration: maxAnimationDuration,
+             );
+           } else {
+             content = ColoredCode(
+               animateFromCode: formattedCode[index - 1].code,
+               code: code,
+               language: language,
+               highlightedLines: highlightedLines,
+               animateHighlightedLines: true,
+               maxAnimationDuration: maxAnimationDuration,
+             );
+           }
 
-            // 將代碼內容包裝在黑色背景的 Container 中
-            final codeWithBackground = Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-              color: MyThemes.codeBackgroundColor,
-              borderRadius: BorderRadius.circular(16.0),
+           // 將代碼內容包裝在黑色背景的 Container 中
+           final codeWithBackground = Container(
+             width: double.infinity,
+             padding: const EdgeInsets.all(16.0),
+             decoration: BoxDecoration(
+               color: MyThemes.codeBackgroundColor,
+               borderRadius: BorderRadius.circular(16.0),
+             ),
+             child: SingleChildScrollView(child: content),
+           );
 
-              ),
-              child: content,
-            );
-
-            return ContentLayout(
-              title: title == null ? null : Text(title),
-              subtitle: subtitle == null ? null : Text(subtitle),
-              content: codeWithBackground,
-            );
-          },
-          subSlideCount: formattedCode.length,
-          notes: notes,
-          transition: transition,
-          theme: theme,
-          autoplayDuration: autoplayDuration,
-          audioSource: audioSource,
-        );
+           return ContentLayout(
+             title: title == null ? null : Text(title),
+             subtitle: subtitle == null ? null : Text(subtitle),
+             content: codeWithBackground,
+           );
+         },
+         subSlideCount: formattedCode.length,
+       );
 }
 
 class MyColors {
@@ -96,8 +93,7 @@ class MyThemes {
       titleGradient: titleGradient,
       code: TextStyle(
         fontFamily: 'JetBrainsMono',
-        color: Color(0xffabdafc), // 淺藍色，適合深色背景
-        fontSize: 24.0,
+        fontSize: 32.0,
         fontWeight: FontWeight.w400,
         fontVariations: [FontVariation('wght', 400)],
       ),
