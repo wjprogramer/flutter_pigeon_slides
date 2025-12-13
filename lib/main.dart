@@ -218,7 +218,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               TextSpan(
-                text: '3. JS interoperability or the package:web library',
+                text: '3. dart:ffi 直接呼叫原生函式庫\n',
+                children: [
+                  TextSpan(
+                    text: '       適用 C/C++ 或預先編譯的動態函式庫，走位元階層而非 Channels',
+                    style: TextStyle(fontSize: 25, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
+              TextSpan(
+                text: '4. JS interoperability or the package:web library',
                 children: [
                   TextSpan(
                     text: ' (Web 專用)\n',
@@ -226,15 +235,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   TextSpan(
                     text: '      後續除非特別提，不然都只會包含前兩者',
-                    style: TextStyle(fontSize: 25, color: Colors.grey.shade600),
-                  ),
-                ],
-              ),
-              TextSpan(
-                text: '4. dart:ffi 直接呼叫原生函式庫\n',
-                children: [
-                  TextSpan(
-                    text: '       適用 C/C++ 或預先編譯的動態函式庫，走位元階層而非 Channels',
                     style: TextStyle(fontSize: 25, color: Colors.grey.shade600),
                   ),
                 ],
