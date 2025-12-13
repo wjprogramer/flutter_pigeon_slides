@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pigeon_slides/pages/api_analysis/api_analysis_page.dart';
 import 'package:flutter_pigeon_slides/pages/api_doc/api_doc_page.dart';
 import 'package:flutter_pigeon_slides/pages/analysis_aspects/analysis_aspects_page.dart';
 import 'package:flutter_pigeon_slides/pages/auto_test/auto_test_page.dart';
+import 'package:flutter_pigeon_slides/pages/compile_time_safety/compile_time_safety_page.dart';
 import 'package:flutter_pigeon_slides/pages/demo/demo_page.dart';
+import 'package:flutter_pigeon_slides/pages/learning_curve/learning_curve_page.dart';
+import 'package:flutter_pigeon_slides/pages/maintainability/maintainability_page.dart';
 import 'package:flutter_pigeon_slides/pages/readable/readable_page.dart';
 import 'package:flutter_pigeon_slides/pages/settings/settings_page.dart';
+import 'package:flutter_pigeon_slides/pages/trending/trending_page.dart';
 import 'package:flutter_pigeon_slides/pages/qa/qa_section_page.dart';
 import 'package:flutter_pigeon_slides/qa/qa_data.dart';
 
@@ -34,6 +39,11 @@ class _MenuPageState extends State<MenuPage> {
       tags: [const _Tag(name: 'new', color: Colors.green)],
     ),
     _Item(name: '可讀性 Readable', page: (_) => ReadablePage()),
+    _Item(name: '學習曲線', page: (_) => const LearningCurvePage()),
+    _Item(name: '可維護性', page: (_) => const MaintainabilityPage()),
+    _Item(name: '編譯期檢查', page: (_) => const CompileTimeSafetyPage()),
+    _Item(name: 'Pigeon API 分析', page: (_) => const ApiAnalysisPage()),
+    _Item(name: '活躍度與趨勢', page: (_) => const TrendingPage()),
     _Item(name: 'pigeon 文件 API Doc', page: (_) => ApiDocPage()),
     ...qaSections.map(
       (s) => _Item(
