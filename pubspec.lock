@@ -521,8 +521,8 @@ packages:
     dependency: "direct main"
     description:
       path: slick_slides
-      ref: "72bfee3821b75a80f0ef86ff9c71a36218bde95f"
-      resolved-ref: "72bfee3821b75a80f0ef86ff9c71a36218bde95f"
+      ref: b1f4fe1b7673db4364901639ec9a23fe4331f8f2
+      resolved-ref: b1f4fe1b7673db4364901639ec9a23fe4331f8f2
       url: "https://github.com/wjprogramer/slick_slides"
     source: git
     version: "0.2.1"

@@ -109,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
         theme: MyThemes.lightTheme,
         controller: _deckController,
         showPageNumber: true,
-        controlActions: [
+        toolbarActions: [
           OutlinedButton(
             style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(4)),
             onPressed: () {
@@ -119,9 +119,9 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             child: const Icon(Icons.menu, color: Colors.white),
           ),
-          const SizedBox(width: 8),
           SlideOverviewButton(controller: _deckController),
         ],
+        controlActions: [],
         slides: [
           Slide(
             theme: MyThemes.lightTheme,
