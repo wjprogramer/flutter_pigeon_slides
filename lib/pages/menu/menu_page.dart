@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pigeon_slides/pages/api_analysis/api_analysis_page.dart';
+import 'package:flutter_pigeon_slides/pages/api_count_comparison/api_count_comparison_page.dart';
 import 'package:flutter_pigeon_slides/pages/api_doc/api_doc_page.dart';
 import 'package:flutter_pigeon_slides/pages/analysis_aspects/analysis_aspects_page.dart';
 import 'package:flutter_pigeon_slides/pages/auto_test/auto_test_code_pages.dart';
@@ -73,6 +74,11 @@ class _MenuPageState extends State<MenuPage> {
     _Item(name: '編譯期檢查', page: (_) => const CompileTimeSafetyPage()),
     _Item(name: 'HostApi 測試介紹', page: (_) => const HostApiTestingPage()),
     _Item(name: 'Pigeon API 分析', page: (_) => const ApiAnalysisPage()),
+    _Item(
+      name: 'Pigeon 的 API 數量很少',
+      page: (_) => const ApiCountComparisonPage(),
+      tags: [const _Tag(name: '數據', color: Colors.purple)],
+    ),
     _Item(name: '活躍度與趨勢', page: (_) => const TrendingPage()),
     _Item(name: 'pigeon 文件 API Doc', page: (_) => ApiDocPage()),
     ...qaSections.map(

@@ -1,0 +1,1007 @@
+[
+  {
+    "package_name": "chromecast_dlna_finder",
+    "api_count": 36,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/chromecast_dlna_finder",
+    "breakdown": {
+      "classes": 28,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 8,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 36
+    }
+  },
+  {
+    "package_name": "flutter_bicubic_resize",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/flutter_bicubic_resize",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "flutter_hooks_lint_plugin",
+    "api_count": 3,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/flutter_hooks_lint_plugin",
+    "breakdown": {
+      "classes": 1,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 2,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 3
+    }
+  },
+  {
+    "package_name": "flutter_welcome_kit",
+    "api_count": 10,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/flutter_welcome_kit",
+    "breakdown": {
+      "classes": 2,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 8,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 10
+    }
+  },
+  {
+    "package_name": "k_auth",
+    "api_count": 24,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/k_auth",
+    "breakdown": {
+      "classes": 9,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 15,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 24
+    }
+  },
+  {
+    "package_name": "miroru_story_editor",
+    "api_count": 6,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/miroru_story_editor",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 6,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 6
+    }
+  },
+  {
+    "package_name": "longvan_dart_sdk",
+    "api_count": 6,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/longvan_dart_sdk",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 6,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 6
+    }
+  },
+  {
+    "package_name": "dexcom",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/dexcom",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "floor2drift",
+    "api_count": 2,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/floor2drift",
+    "breakdown": {
+      "classes": 2,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 0,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 2
+    }
+  },
+  {
+    "package_name": "entao_jsonrpc",
+    "api_count": 17,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/entao_jsonrpc",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 17,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 17
+    }
+  },
+  {
+    "package_name": "simple_eye_dropper",
+    "api_count": 2,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/simple_eye_dropper",
+    "breakdown": {
+      "classes": 1,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 2
+    }
+  },
+  {
+    "package_name": "s_future_button",
+    "api_count": 6,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/s_future_button",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 6,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 6
+    }
+  },
+  {
+    "package_name": "entao_http",
+    "api_count": 4,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/entao_http",
+    "breakdown": {
+      "classes": 1,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 3,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 4
+    }
+  },
+  {
+    "package_name": "toly_check_box",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/toly_check_box",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "litesql",
+    "api_count": 13,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/litesql",
+    "breakdown": {
+      "classes": 1,
+      "typedefs": 0,
+      "enums": 6,
+      "functions": 4,
+      "extensions": 1,
+      "mixins": 1,
+      "total": 13
+    }
+  },
+  {
+    "package_name": "core_haptics",
+    "api_count": 3,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/core_haptics",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 3,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 3
+    }
+  },
+  {
+    "package_name": "s_widgets",
+    "api_count": 10,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/s_widgets",
+    "breakdown": {
+      "classes": 1,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 9,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 10
+    }
+  },
+  {
+    "package_name": "fmvvm",
+    "api_count": 91,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/fmvvm",
+    "breakdown": {
+      "classes": 39,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 51,
+      "extensions": 0,
+      "mixins": 1,
+      "total": 91
+    }
+  },
+  {
+    "package_name": "ort",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/ort",
+    "breakdown": {
+      "classes": 1,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 0,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "audio_play_or_record",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/audio_play_or_record",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "bible_parser_flutter",
+    "api_count": 14,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/bible_parser_flutter",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 14,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 14
+    }
+  },
+  {
+    "package_name": "dart_node_react_native",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/dart_node_react_native",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "dart_node_react",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/dart_node_react",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "dart_node_mcp",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/dart_node_mcp",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "dart_node_better_sqlite3",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/dart_node_better_sqlite3",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "dart_node_ws",
+    "api_count": 3,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/dart_node_ws",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 3,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 3
+    }
+  },
+  {
+    "package_name": "super_editor",
+    "api_count": 8,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/super_editor",
+    "breakdown": {
+      "classes": 3,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 5,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 8
+    }
+  },
+  {
+    "package_name": "dart_node_express",
+    "api_count": 3,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/dart_node_express",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 3,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 3
+    }
+  },
+  {
+    "package_name": "reflux",
+    "api_count": 6,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/reflux",
+    "breakdown": {
+      "classes": 3,
+      "typedefs": 1,
+      "enums": 0,
+      "functions": 2,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 6
+    }
+  },
+  {
+    "package_name": "ns_player",
+    "api_count": 12,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/ns_player",
+    "breakdown": {
+      "classes": 3,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 9,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 12
+    }
+  },
+  {
+    "package_name": "zeffya_lints",
+    "api_count": 8,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/zeffya_lints",
+    "breakdown": {
+      "classes": 8,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 0,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 8
+    }
+  },
+  {
+    "package_name": "dart_node_core",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/dart_node_core",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "idb_shim",
+    "api_count": 2,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/idb_shim",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 2,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 2
+    }
+  },
+  {
+    "package_name": "sliver_dashboard",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/sliver_dashboard",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "s_button",
+    "api_count": 4,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/s_button",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 4,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 4
+    }
+  },
+  {
+    "package_name": "dart_logging",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/dart_logging",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "streak_calculator",
+    "api_count": 4,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/streak_calculator",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 4,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 4
+    }
+  },
+  {
+    "package_name": "awesome_toast",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/awesome_toast",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "sqflite_common_ffi",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/sqflite_common_ffi",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "sliding_panel_kit",
+    "api_count": 6,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/sliding_panel_kit",
+    "breakdown": {
+      "classes": 2,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 4,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 6
+    }
+  },
+  {
+    "package_name": "pdf_to_image_converter",
+    "api_count": 65,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/pdf_to_image_converter",
+    "breakdown": {
+      "classes": 43,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 22,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 65
+    }
+  },
+  {
+    "package_name": "smart_parser",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/smart_parser",
+    "breakdown": {
+      "classes": 1,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 0,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "api_caller",
+    "api_count": 12,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/api_caller",
+    "breakdown": {
+      "classes": 3,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 9,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 12
+    }
+  },
+  {
+    "package_name": "kaizapay_sdk_flutter",
+    "api_count": 3,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/kaizapay_sdk_flutter",
+    "breakdown": {
+      "classes": 1,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 2,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 3
+    }
+  },
+  {
+    "package_name": "cms",
+    "api_count": 7,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/cms",
+    "breakdown": {
+      "classes": 5,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 2,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 7
+    }
+  },
+  {
+    "package_name": "truvideo_core_sdk",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/truvideo_core_sdk",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "xelis_dart_sdk",
+    "api_count": 9,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/xelis_dart_sdk",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 9,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 9
+    }
+  },
+  {
+    "package_name": "save_points_chart",
+    "api_count": 11,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/save_points_chart",
+    "breakdown": {
+      "classes": 2,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 9,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 11
+    }
+  },
+  {
+    "package_name": "zenrouter",
+    "api_count": 5,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/zenrouter",
+    "breakdown": {
+      "classes": 1,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 4,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 5
+    }
+  },
+  {
+    "package_name": "kaizapay_sdk_dart",
+    "api_count": 3,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/kaizapay_sdk_dart",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 3,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 3
+    }
+  },
+  {
+    "package_name": "macro_kit",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/macro_kit",
+    "breakdown": {
+      "classes": 1,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 0,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "permission_inspector",
+    "api_count": 2,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/permission_inspector",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 2,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 2
+    }
+  },
+  {
+    "package_name": "flutter_faker_plus",
+    "api_count": 6,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/flutter_faker_plus",
+    "breakdown": {
+      "classes": 2,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 4,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 6
+    }
+  },
+  {
+    "package_name": "pro_binary",
+    "api_count": 3,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/pro_binary",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 3,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 3
+    }
+  },
+  {
+    "package_name": "eip7702",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/eip7702",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "dart_ipfs",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/dart_ipfs",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 1,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  },
+  {
+    "package_name": "lpe",
+    "api_count": 2,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/lpe",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 2,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 2
+    }
+  },
+  {
+    "package_name": "vtj_bluetooth_package",
+    "api_count": 23,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/vtj_bluetooth_package",
+    "breakdown": {
+      "classes": 2,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 21,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 23
+    }
+  },
+  {
+    "package_name": "flutter_liveness_check",
+    "api_count": 30,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/flutter_liveness_check",
+    "breakdown": {
+      "classes": 4,
+      "typedefs": 0,
+      "enums": 3,
+      "functions": 23,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 30
+    }
+  },
+  {
+    "package_name": "truvideo_camera_sdk",
+    "api_count": 2,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/truvideo_camera_sdk",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 2,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 2
+    }
+  },
+  {
+    "package_name": "truvideo_video_sdk",
+    "api_count": 10,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/truvideo_video_sdk",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 10,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 10
+    }
+  },
+  {
+    "package_name": "truvideo_image_sdk",
+    "api_count": 3,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/truvideo_image_sdk",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 3,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 3
+    }
+  },
+  {
+    "package_name": "facedetect_tadi_sdk",
+    "api_count": 11,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/facedetect_tadi_sdk",
+    "breakdown": {
+      "classes": 1,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 10,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 11
+    }
+  },
+  {
+    "package_name": "state_beacon",
+    "api_count": 12,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/state_beacon",
+    "breakdown": {
+      "classes": 12,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 0,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 12
+    }
+  },
+  {
+    "package_name": "state_beacon_core",
+    "api_count": 12,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/state_beacon_core",
+    "breakdown": {
+      "classes": 12,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 0,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 12
+    }
+  },
+  {
+    "package_name": "webrtc_dart",
+    "api_count": 11,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/webrtc_dart",
+    "breakdown": {
+      "classes": 0,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 11,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 11
+    }
+  },
+  {
+    "package_name": "local_first",
+    "api_count": 1,
+    "description": "",
+    "pub_dev_url": "https://pub.dev/packages/local_first",
+    "breakdown": {
+      "classes": 1,
+      "typedefs": 0,
+      "enums": 0,
+      "functions": 0,
+      "extensions": 0,
+      "mixins": 0,
+      "total": 1
+    }
+  }
+]

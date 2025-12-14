@@ -13,7 +13,7 @@ void main() async {
 
   // SlickSlides 同時會初始化 Highlighter (pkg: syntax_highlight)
   await SlickSlides.initialize(
-    languages: ['dart', 'yaml', 'serverpod_protocol', 'kotlin', 'swift'],
+    languages: ['dart', 'yaml', 'serverpod_protocol', 'kotlin', 'swift', 'python'],
   );
 
   runApp(const MyApp());
