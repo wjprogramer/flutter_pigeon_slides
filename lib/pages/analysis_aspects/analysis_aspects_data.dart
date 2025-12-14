@@ -4,6 +4,7 @@ import 'package:flutter_pigeon_slides/pages/ci_integration/ci_integration_page.d
 import 'package:flutter_pigeon_slides/pages/learning_curve/learning_curve_page.dart';
 import 'package:flutter_pigeon_slides/pages/maintainability/maintainability_page.dart';
 import 'package:flutter_pigeon_slides/pages/readable/readable_page.dart';
+import 'package:flutter_pigeon_slides/pages/trending/trending_page.dart';
 
 /// 分析面向的數據模型
 class AnalysisAspect {
@@ -78,14 +79,14 @@ final analysisAspects = <AnalysisAspect>[
   AnalysisAspect(
     name: '活躍度',
     description: '套件更新頻率與社群活躍度',
-    pageBuilder: null, // TODO: 待實作
+    pageBuilder: (_) => const TrendingPage(),
     icon: Icons.update,
     color: Colors.indigo,
   ),
   AnalysisAspect(
     name: '公信力',
     description: '官方維護與社群信任度',
-    pageBuilder: null, // TODO: 待實作
+    pageBuilder: (_) => const TrendingPage(),
     icon: Icons.verified,
     color: Colors.cyan,
   ),

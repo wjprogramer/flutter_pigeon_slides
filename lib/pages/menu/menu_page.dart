@@ -13,6 +13,8 @@ import 'package:flutter_pigeon_slides/pages/host_api_testing/host_api_testing_pa
 import 'package:flutter_pigeon_slides/pages/learning_curve/learning_curve_page.dart';
 import 'package:flutter_pigeon_slides/pages/maintainability/maintainability_page.dart';
 import 'package:flutter_pigeon_slides/pages/pigeon_adoption/pigeon_adoption_page.dart';
+import 'package:flutter_pigeon_slides/pages/pigeon_version_management/pigeon_version_management_page.dart';
+import 'package:flutter_pigeon_slides/pages/pigeon_vs_method_channel/pigeon_vs_method_channel_page.dart';
 import 'package:flutter_pigeon_slides/pages/readable/readable_page.dart';
 import 'package:flutter_pigeon_slides/pages/settings/settings_page.dart';
 import 'package:flutter_pigeon_slides/pages/trending/trending_page.dart';
@@ -41,6 +43,11 @@ class _MenuPageState extends State<MenuPage> {
       name: '導入 Pigeon 的策略',
       page: (_) => const PigeonAdoptionPage(),
       tags: [const _Tag(name: '策略', color: Colors.deepPurple)],
+    ),
+    _Item(
+      name: 'Pigeon vs MethodChannel 根本異同',
+      page: (_) => const PigeonVsMethodChannelPage(),
+      tags: [const _Tag(name: '分析', color: Colors.green)],
     ),
     
     // ========== 分析面向 ==========
@@ -88,6 +95,11 @@ class _MenuPageState extends State<MenuPage> {
       page: (_) => const CiIntegrationPage(),
       tags: [const _Tag(name: '分析', color: Colors.green)],
     ),
+    _Item(
+      name: 'Pigeon 版本管理與升級策略',
+      page: (_) => const PigeonVersionManagementPage(),
+      tags: [const _Tag(name: '策略', color: Colors.deepPurple)],
+    ),
     
     // ========== API 相關 ==========
     _Item(
@@ -106,7 +118,7 @@ class _MenuPageState extends State<MenuPage> {
       tags: [const _Tag(name: 'API', color: Colors.purple)],
     ),
     _Item(
-      name: '活躍度與趨勢',
+      name: '活躍度、趨勢與公信力',
       page: (_) => const TrendingPage(),
       tags: [const _Tag(name: '數據', color: Colors.orange)],
     ),

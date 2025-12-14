@@ -129,18 +129,21 @@ class _AutoTestPageState extends State<AutoTestPage> {
     final totalText = totalMs != null
         ? ' | 總計: ${totalMs.toStringAsFixed(1)} ms'
         : '';
-    return InkWell(
-      onTap: onToggle,
-      borderRadius: BorderRadius.circular(6),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          children: [
-            Container(width: 12, height: 12, color: displayColor),
-            const SizedBox(width: 8),
-            Expanded(child: Text(label)),
-            Text('最新: $last $unit | 平均: $avg $unit$totalText'),
-          ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: InkWell(
+        onTap: onToggle,
+        borderRadius: BorderRadius.circular(6),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+          child: Row(
+            children: [
+              Container(width: 12, height: 12, color: displayColor),
+              const SizedBox(width: 8),
+              Expanded(child: Text(label)),
+              Text('最新: $last $unit | 平均: $avg $unit$totalText'),
+            ],
+          ),
         ),
       ),
     );
@@ -719,10 +722,40 @@ class _AutoTestPageState extends State<AutoTestPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Flutter → 原生'),
-                    const SizedBox(height: 4),
-                    const Text('註：前 $_warmup 批為 warm-up，不納入比較'),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.blue.shade200, width: 2),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.arrow_forward, color: Colors.blue.shade700),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Flutter → 原生',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue.shade900,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Text(
+                        '註：前 $_warmup 批為 warm-up，不納入比較',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     _chart(),
                     const SizedBox(height: 8),
                     _seriesRow(
@@ -784,10 +817,34 @@ class _AutoTestPageState extends State<AutoTestPage> {
                       unit: 'µs',
                       totalMs: _dartTotalMs,
                     ),
-                    const SizedBox(height: 20),
-                    const Divider(),
-                    const SizedBox(height: 8),
-                    const Text('原生 → Flutter'),
+                    const SizedBox(height: 24),
+                    Divider(
+                      thickness: 2,
+                      color: Colors.grey.shade300,
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.green.shade200, width: 2),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.arrow_back, color: Colors.green.shade700),
+                          const SizedBox(width: 8),
+                          Text(
+                            '原生 → Flutter',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green.shade900,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 12),
                     _chartNativeToFlutter(),
                     const SizedBox(height: 8),

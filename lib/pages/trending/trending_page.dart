@@ -7,7 +7,7 @@ class TrendingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pigeon 活躍度與趨勢'),
+        title: const Text('活躍度、趨勢與公信力'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -15,6 +15,11 @@ class TrendingPage extends StatelessWidget {
           _Section(
             title: '📊 基本數據（2025/09/21 紀錄）',
             children: [
+              const Text(
+                '以下數據同時反映「活躍度」和「公信力」兩個面向：',
+                style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+              ),
+              const SizedBox(height: 16),
               _StatCard(
                 icon: Icons.favorite,
                 color: Colors.red,
@@ -193,10 +198,10 @@ class TrendingPage extends StatelessWidget {
           ),
           const Divider(height: 32),
           _Section(
-            title: '🔄 更新頻率分析',
+            title: '🔄 活躍度分析',
             children: [
               const Text(
-                '過去一年有 35 個更新，這表示：',
+                '活躍度反映套件的維護頻率和社群參與度。過去一年有 35 個更新，這表示：',
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 12),
@@ -222,7 +227,7 @@ class TrendingPage extends StatelessWidget {
                           Icon(Icons.lightbulb, color: Colors.orange.shade700),
                           const SizedBox(width: 8),
                           const Text(
-                            '更新頻率的正面意義',
+                            '高活躍度的正面意義',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -237,6 +242,131 @@ class TrendingPage extends StatelessWidget {
                         '3. 可以鎖定版本使用（如 26.1.4）\n'
                         '4. 更新通常帶來改進而非破壞性變更\n'
                         '5. 官方維護意味著長期支援',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const Divider(height: 32),
+          _Section(
+            title: '🏛️ 公信力分析',
+            children: [
+              const Text(
+                '公信力反映套件的可信度和社群信任度，主要指標包括：',
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                color: Colors.blue.shade50,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.verified, color: Colors.blue.shade700),
+                          const SizedBox(width: 8),
+                          const Text(
+                            '官方維護',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Pigeon 目前由 Flutter 官方團隊維護，這意味著：',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        '• 目前官方維護：現階段由官方團隊負責，品質有保障\n'
+                        '• 與 Flutter SDK 同步：版本更新與 Flutter 保持一致\n'
+                        '• 品質保證：經過官方審查和測試\n'
+                        '• 社群信任：開發者更願意採用官方工具\n'
+                        '• 即使未來轉移：若轉為社群維護，通常會有明確的過渡期和社群接手（如 package_info → package_info_plus）',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                color: Colors.green.shade50,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.thumb_up, color: Colors.green.shade700),
+                          const SizedBox(width: 8),
+                          const Text(
+                            '社群認可',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        '下載量、喜歡數、Pub Points 等數據反映社群對套件的認可：',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        '• 高下載量：326k 下載，表示大量專案採用\n'
+                        '• 高喜歡數：1.17k likes，在官方套件中排名前 20%\n'
+                        '• 高評分：140/160 Pub Points，品質獲得認可\n'
+                        '• 持續使用：下載量持續增長，表示實用性強',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                color: Colors.orange.shade50,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.security, color: Colors.orange.shade700),
+                          const SizedBox(width: 8),
+                          const Text(
+                            '穩定性與可靠性',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        '公信力也體現在套件的穩定性和可靠性：',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        '• 版本穩定：可以鎖定版本使用，避免意外變更\n'
+                        '• 向後相容：大部分更新都是向後相容的\n'
+                        '• 問題修復：積極修復 bug 和問題\n'
+                        '• 文檔完整：官方文檔清晰，社群資源豐富',
                         style: TextStyle(fontSize: 16),
                       ),
                     ],
