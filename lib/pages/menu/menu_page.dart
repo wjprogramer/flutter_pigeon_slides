@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pigeon_slides/pages/api_analysis/api_analysis_page.dart';
 import 'package:flutter_pigeon_slides/pages/api_doc/api_doc_page.dart';
 import 'package:flutter_pigeon_slides/pages/analysis_aspects/analysis_aspects_page.dart';
+import 'package:flutter_pigeon_slides/pages/auto_test/auto_test_code_pages.dart';
 import 'package:flutter_pigeon_slides/pages/auto_test/auto_test_page.dart';
 import 'package:flutter_pigeon_slides/pages/ci_integration/ci_integration_page.dart';
 import 'package:flutter_pigeon_slides/pages/compile_time_safety/compile_time_safety_page.dart';
@@ -34,6 +35,31 @@ class _MenuPageState extends State<MenuPage> {
       name: 'Auto Perf Runner',
       page: (_) => const AutoTestPage(),
       tags: [const _Tag(name: 'auto', color: Colors.orange)],
+    ),
+    _Item(
+      name: '測試架構說明',
+      page: (_) => const AutoTestArchitecturePage(),
+      tags: [const _Tag(name: 'code', color: Colors.purple)],
+    ),
+    _Item(
+      name: 'Flutter → 原生測試實作',
+      page: (_) => const FlutterToNativeTestPage(),
+      tags: [const _Tag(name: 'code', color: Colors.purple)],
+    ),
+    _Item(
+      name: '原生 → Flutter 測試實作',
+      page: (_) => const NativeToFlutterTestPage(),
+      tags: [const _Tag(name: 'code', color: Colors.purple)],
+    ),
+    _Item(
+      name: '原生端實作',
+      page: (_) => const NativeImplementationPage(),
+      tags: [const _Tag(name: 'code', color: Colors.purple)],
+    ),
+    _Item(
+      name: 'CounterChannels 實作',
+      page: (_) => const CounterChannelsImplementationPage(),
+      tags: [const _Tag(name: 'code', color: Colors.purple)],
     ),
     _Item(
       name: 'Demo / Perf',
