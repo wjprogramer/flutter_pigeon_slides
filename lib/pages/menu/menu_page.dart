@@ -29,71 +29,157 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   final _controller = TextEditingController();
   final _allItems = <_Item>[
+    // ========== 入口與概覽 ==========
     _Item(
       name: '分析面向',
       page: (_) => const AnalysisAspectsPage(),
       tags: [const _Tag(name: '入口', color: Colors.blue)],
     ),
+    
+    // ========== 策略與導入 ==========
     _Item(
-      name: 'Auto Perf Runner',
-      page: (_) => const AutoTestPage(),
-      tags: [const _Tag(name: 'auto', color: Colors.orange)],
+      name: '導入 Pigeon 的策略',
+      page: (_) => const PigeonAdoptionPage(),
+      tags: [const _Tag(name: '策略', color: Colors.deepPurple)],
+    ),
+    
+    // ========== 分析面向 ==========
+    _Item(
+      name: '可讀性 Readable',
+      page: (_) => ReadablePage(),
+      tags: [const _Tag(name: '分析', color: Colors.green)],
+    ),
+    _Item(
+      name: 'Q&A：可讀性與審查策略',
+      page: (_) => QaSectionPage(
+        section: qaSections.firstWhere((s) => s.title == '可讀性與審查策略'),
+      ),
+      tags: [const _Tag(name: '分析', color: Colors.green), const _Tag(name: 'Q&A', color: Colors.grey)],
+    ),
+    _Item(
+      name: '學習曲線',
+      page: (_) => const LearningCurvePage(),
+      tags: [const _Tag(name: '分析', color: Colors.green)],
+    ),
+    _Item(
+      name: '開發速度',
+      page: (_) => const DevelopmentSpeedPage(),
+      tags: [const _Tag(name: '分析', color: Colors.green)],
+    ),
+    _Item(
+      name: 'Q&A：生產力 / 開發速度與程式碼量',
+      page: (_) => QaSectionPage(
+        section: qaSections.firstWhere((s) => s.title == '生產力 / 開發速度與程式碼量'),
+      ),
+      tags: [const _Tag(name: '分析', color: Colors.green), const _Tag(name: 'Q&A', color: Colors.grey)],
+    ),
+    _Item(
+      name: '可維護性',
+      page: (_) => const MaintainabilityPage(),
+      tags: [const _Tag(name: '分析', color: Colors.green)],
+    ),
+    _Item(
+      name: '編譯期檢查',
+      page: (_) => const CompileTimeSafetyPage(),
+      tags: [const _Tag(name: '分析', color: Colors.green)],
+    ),
+    _Item(
+      name: 'CI/CD 整合',
+      page: (_) => const CiIntegrationPage(),
+      tags: [const _Tag(name: '分析', color: Colors.green)],
+    ),
+    
+    // ========== API 相關 ==========
+    _Item(
+      name: 'Pigeon API 分析',
+      page: (_) => const ApiAnalysisPage(),
+      tags: [const _Tag(name: 'API', color: Colors.purple)],
+    ),
+    _Item(
+      name: 'Pigeon 的 API 數量很少',
+      page: (_) => const ApiCountComparisonPage(),
+      tags: [const _Tag(name: 'API', color: Colors.purple), const _Tag(name: '數據', color: Colors.orange)],
+    ),
+    _Item(
+      name: 'pigeon 文件 API Doc',
+      page: (_) => ApiDocPage(),
+      tags: [const _Tag(name: 'API', color: Colors.purple)],
+    ),
+    _Item(
+      name: '活躍度與趨勢',
+      page: (_) => const TrendingPage(),
+      tags: [const _Tag(name: '數據', color: Colors.orange)],
+    ),
+    
+    // ========== 測試相關 ==========
+    _Item(
+      name: 'HostApi 測試介紹',
+      page: (_) => const HostApiTestingPage(),
+      tags: [const _Tag(name: '測試', color: Colors.teal)],
+    ),
+    _Item(
+      name: 'Q&A：測試',
+      page: (_) => QaSectionPage(
+        section: qaSections.firstWhere((s) => s.title == '測試'),
+      ),
+      tags: [const _Tag(name: '測試', color: Colors.teal), const _Tag(name: 'Q&A', color: Colors.grey)],
     ),
     _Item(
       name: '測試架構說明',
       page: (_) => const AutoTestArchitecturePage(),
-      tags: [const _Tag(name: 'code', color: Colors.purple)],
+      tags: [const _Tag(name: '測試', color: Colors.teal), const _Tag(name: 'code', color: Colors.brown)],
     ),
     _Item(
       name: 'Flutter → 原生測試實作',
       page: (_) => const FlutterToNativeTestPage(),
-      tags: [const _Tag(name: 'code', color: Colors.purple)],
+      tags: [const _Tag(name: '測試', color: Colors.teal), const _Tag(name: 'code', color: Colors.brown)],
     ),
     _Item(
       name: '原生 → Flutter 測試實作',
       page: (_) => const NativeToFlutterTestPage(),
-      tags: [const _Tag(name: 'code', color: Colors.purple)],
+      tags: [const _Tag(name: '測試', color: Colors.teal), const _Tag(name: 'code', color: Colors.brown)],
     ),
+    
+    // ========== 實作相關 ==========
     _Item(
       name: '原生端實作',
       page: (_) => const NativeImplementationPage(),
-      tags: [const _Tag(name: 'code', color: Colors.purple)],
+      tags: [const _Tag(name: '實作', color: Colors.indigo), const _Tag(name: 'code', color: Colors.brown)],
     ),
     _Item(
       name: 'CounterChannels 實作',
       page: (_) => const CounterChannelsImplementationPage(),
-      tags: [const _Tag(name: 'code', color: Colors.purple)],
+      tags: [const _Tag(name: '實作', color: Colors.indigo), const _Tag(name: 'code', color: Colors.brown)],
     ),
+    
+    // ========== 效能相關 ==========
+    _Item(
+      name: 'Auto Perf Runner',
+      page: (_) => const AutoTestPage(),
+      tags: [const _Tag(name: '效能', color: Colors.deepOrange)],
+    ),
+    _Item(
+      name: 'Q&A：效能',
+      page: (_) => QaSectionPage(
+        section: qaSections.firstWhere((s) => s.title == '效能'),
+      ),
+      tags: [const _Tag(name: '效能', color: Colors.deepOrange), const _Tag(name: 'Q&A', color: Colors.grey)],
+    ),
+    
+    // ========== 工具與示範 ==========
     _Item(
       name: 'Demo / Perf',
       page: (_) => DemoPage(),
-      tags: [const _Tag(name: 'new', color: Colors.green)],
+      tags: [const _Tag(name: '示範', color: Colors.cyan)],
     ),
-    _Item(name: '可讀性 Readable', page: (_) => ReadablePage()),
-    _Item(name: '學習曲線', page: (_) => const LearningCurvePage()),
-    _Item(name: '開發速度', page: (_) => const DevelopmentSpeedPage()),
-    _Item(name: '可維護性', page: (_) => const MaintainabilityPage()),
-    _Item(name: 'CI/CD 整合', page: (_) => const CiIntegrationPage()),
-    _Item(name: '編譯期檢查', page: (_) => const CompileTimeSafetyPage()),
+    
+    // ========== 其他 Q&A ==========
     _Item(
-      name: '導入 Pigeon 的策略',
-      page: (_) => const PigeonAdoptionPage(),
-      tags: [const _Tag(name: '策略', color: Colors.blue)],
-    ),
-    _Item(name: 'HostApi 測試介紹', page: (_) => const HostApiTestingPage()),
-    _Item(name: 'Pigeon API 分析', page: (_) => const ApiAnalysisPage()),
-    _Item(
-      name: 'Pigeon 的 API 數量很少',
-      page: (_) => const ApiCountComparisonPage(),
-      tags: [const _Tag(name: '數據', color: Colors.purple)],
-    ),
-    _Item(name: '活躍度與趨勢', page: (_) => const TrendingPage()),
-    _Item(name: 'pigeon 文件 API Doc', page: (_) => ApiDocPage()),
-    ...qaSections.map(
-      (s) => _Item(
-        name: s.title,
-        page: (_) => QaSectionPage(section: s),
+      name: 'Q&A：待實測/驗證清單',
+      page: (_) => QaSectionPage(
+        section: qaSections.firstWhere((s) => s.title == '待實測/驗證清單'),
       ),
+      tags: [const _Tag(name: 'Q&A', color: Colors.grey)],
     ),
   ];
 
