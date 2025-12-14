@@ -8,9 +8,11 @@ import 'package:flutter_pigeon_slides/pages/auto_test/auto_test_page.dart';
 import 'package:flutter_pigeon_slides/pages/ci_integration/ci_integration_page.dart';
 import 'package:flutter_pigeon_slides/pages/compile_time_safety/compile_time_safety_page.dart';
 import 'package:flutter_pigeon_slides/pages/demo/demo_page.dart';
+import 'package:flutter_pigeon_slides/pages/development_speed/development_speed_page.dart';
 import 'package:flutter_pigeon_slides/pages/host_api_testing/host_api_testing_page.dart';
 import 'package:flutter_pigeon_slides/pages/learning_curve/learning_curve_page.dart';
 import 'package:flutter_pigeon_slides/pages/maintainability/maintainability_page.dart';
+import 'package:flutter_pigeon_slides/pages/pigeon_adoption/pigeon_adoption_page.dart';
 import 'package:flutter_pigeon_slides/pages/readable/readable_page.dart';
 import 'package:flutter_pigeon_slides/pages/settings/settings_page.dart';
 import 'package:flutter_pigeon_slides/pages/trending/trending_page.dart';
@@ -69,9 +71,15 @@ class _MenuPageState extends State<MenuPage> {
     ),
     _Item(name: '可讀性 Readable', page: (_) => ReadablePage()),
     _Item(name: '學習曲線', page: (_) => const LearningCurvePage()),
+    _Item(name: '開發速度', page: (_) => const DevelopmentSpeedPage()),
     _Item(name: '可維護性', page: (_) => const MaintainabilityPage()),
     _Item(name: 'CI/CD 整合', page: (_) => const CiIntegrationPage()),
     _Item(name: '編譯期檢查', page: (_) => const CompileTimeSafetyPage()),
+    _Item(
+      name: '導入 Pigeon 的策略',
+      page: (_) => const PigeonAdoptionPage(),
+      tags: [const _Tag(name: '策略', color: Colors.blue)],
+    ),
     _Item(name: 'HostApi 測試介紹', page: (_) => const HostApiTestingPage()),
     _Item(name: 'Pigeon API 分析', page: (_) => const ApiAnalysisPage()),
     _Item(
