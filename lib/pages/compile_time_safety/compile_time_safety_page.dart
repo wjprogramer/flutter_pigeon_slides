@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pigeon_slides/widgets/common/code.dart';
 
 class CompileTimeSafetyPage extends StatelessWidget {
   const CompileTimeSafetyPage({super.key});
@@ -267,6 +268,75 @@ class _ExampleCard extends StatelessWidget {
   final String problem;
   final String solution;
 
+  /// 解析包含 markdown 程式碼區塊的文字
+  /// 返回一個 widget list，包含文字和程式碼區塊
+  List<Widget> _parseCodeBlocks(String text) {
+    final regex = RegExp(r'```(\w+)?\n(.*?)```', dotAll: true);
+    final parts = <Widget>[];
+    int lastEnd = 0;
+
+    for (final match in regex.allMatches(text)) {
+      // 添加程式碼區塊前的文字
+      if (match.start > lastEnd) {
+        final beforeText = text.substring(lastEnd, match.start).trim();
+        if (beforeText.isNotEmpty) {
+          parts.add(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                beforeText,
+                style: const TextStyle(fontSize: 14),
+              ),
+            ),
+          );
+        }
+      }
+
+      // 添加程式碼區塊
+      final language = match.group(1) ?? 'dart';
+      final code = match.group(2)?.trim() ?? '';
+      if (code.isNotEmpty) {
+        parts.add(
+          PageCodeBlock(
+            code: code,
+            language: language,
+            fontSize: 14.0,
+          ),
+        );
+      }
+
+      lastEnd = match.end;
+    }
+
+    // 添加最後的文字
+    if (lastEnd < text.length) {
+      final afterText = text.substring(lastEnd).trim();
+      if (afterText.isNotEmpty) {
+        parts.add(
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              afterText,
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+        );
+      }
+    }
+
+    // 如果沒有找到任何程式碼區塊，返回原始文字
+    if (parts.isEmpty) {
+      return [
+        Text(
+          text,
+          style: const TextStyle(fontSize: 14),
+        ),
+      ];
+    }
+
+    return parts;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -305,10 +375,7 @@ class _ExampleCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    problem,
-                    style: const TextStyle(fontSize: 14, fontFamily: 'monospace'),
-                  ),
+                  ..._parseCodeBlocks(problem),
                 ],
               ),
             ),
@@ -335,10 +402,7 @@ class _ExampleCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    solution,
-                    style: const TextStyle(fontSize: 14, fontFamily: 'monospace'),
-                  ),
+                  ..._parseCodeBlocks(solution),
                 ],
               ),
             ),

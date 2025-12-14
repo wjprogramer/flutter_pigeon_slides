@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pigeon_slides/widgets/common/code.dart';
 
 class HostApiTestingPage extends StatelessWidget {
   const HostApiTestingPage({super.key});
@@ -364,30 +365,15 @@ class _StrategyCard extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '範例：',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    example,
-                    style: const TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
+            const Text(
+              '範例：',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            ),
+            const SizedBox(height: 8),
+            PageCodeBlock(
+              code: example,
+              language: 'dart',
+              fontSize: 14.0,
             ),
           ],
         ),
@@ -415,21 +401,10 @@ class _CodeBlock extends StatelessWidget {
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade900,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                code,
-                style: const TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 12,
-                  color: Colors.white,
-                ),
-              ),
+            PageCodeBlock(
+              code: code,
+              language: 'dart',
+              fontSize: 14.0,
             ),
           ],
         ),
