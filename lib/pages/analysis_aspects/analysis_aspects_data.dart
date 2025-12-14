@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pigeon_slides/pages/auto_test/auto_test_page.dart';
+import 'package:flutter_pigeon_slides/pages/ci_integration/ci_integration_page.dart';
 import 'package:flutter_pigeon_slides/pages/learning_curve/learning_curve_page.dart';
 import 'package:flutter_pigeon_slides/pages/maintainability/maintainability_page.dart';
 import 'package:flutter_pigeon_slides/pages/readable/readable_page.dart';
@@ -66,6 +67,13 @@ final analysisAspects = <AnalysisAspect>[
     pageBuilder: (_) => const MaintainabilityPage(),
     icon: Icons.build,
     color: Colors.teal,
+  ),
+  AnalysisAspect(
+    name: 'CI/CD 整合',
+    description: '自動化流程與產物同步檢查',
+    pageBuilder: (_) => const CiIntegrationPage(),
+    icon: Icons.settings_applications,
+    color: Colors.deepPurple,
   ),
   AnalysisAspect(
     name: '活躍度',
