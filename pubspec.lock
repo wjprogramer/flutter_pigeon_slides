@@ -520,11 +520,9 @@ packages:
   slick_slides:
     dependency: "direct main"
     description:
-      path: slick_slides
-      ref: b1f4fe1b7673db4364901639ec9a23fe4331f8f2
-      resolved-ref: b1f4fe1b7673db4364901639ec9a23fe4331f8f2
-      url: "https://github.com/wjprogramer/slick_slides"
-    source: git
+      path: "../slick_slides/slick_slides"
+      relative: true
+    source: path
     version: "0.2.1"
   source_span:
     dependency: transitive

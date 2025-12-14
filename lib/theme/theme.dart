@@ -27,6 +27,7 @@ class CodeSlideWithBackground extends Slide {
                language: language,
                highlightedLines: highlightedLines,
                maxAnimationDuration: maxAnimationDuration,
+               showLineNumbers: true,
              );
            } else {
              content = ColoredCode(
@@ -36,6 +37,7 @@ class CodeSlideWithBackground extends Slide {
                highlightedLines: highlightedLines,
                animateHighlightedLines: true,
                maxAnimationDuration: maxAnimationDuration,
+               showLineNumbers: true,
              );
            }
 
