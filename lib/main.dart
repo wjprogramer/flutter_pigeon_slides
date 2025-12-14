@@ -63,6 +63,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Pigeon 介紹',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blue,
@@ -199,6 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
             bullets: [
               TextSpan(
                 text: '1. Standard Platform Channels API\n',
+                style: MyThemes.lightTheme.textTheme.body,
                 children: [
                   TextSpan(
                     text:
@@ -209,6 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               TextSpan(
                 text: '2. Pigeon package\n',
+                style: MyThemes.lightTheme.textTheme.body,
                 children: [
                   TextSpan(
                     text:
@@ -219,6 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               TextSpan(
                 text: '3. dart:ffi 直接呼叫原生函式庫\n',
+                style: MyThemes.lightTheme.textTheme.body,
                 children: [
                   TextSpan(
                     text: '       適用 C/C++ 或預先編譯的動態函式庫，走位元階層而非 Channels',
@@ -228,6 +232,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               TextSpan(
                 text: '4. JS interoperability or the package:web library',
+                style: MyThemes.lightTheme.textTheme.body,
                 children: [
                   TextSpan(
                     text: ' (Web 專用)\n',

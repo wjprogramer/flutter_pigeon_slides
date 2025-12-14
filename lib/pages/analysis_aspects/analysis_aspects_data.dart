@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pigeon_slides/pages/auto_test/auto_test_page.dart';
 import 'package:flutter_pigeon_slides/pages/ci_integration/ci_integration_page.dart';
+import 'package:flutter_pigeon_slides/pages/development_speed/development_speed_page.dart';
 import 'package:flutter_pigeon_slides/pages/learning_curve/learning_curve_page.dart';
 import 'package:flutter_pigeon_slides/pages/maintainability/maintainability_page.dart';
 import 'package:flutter_pigeon_slides/pages/readable/readable_page.dart';
@@ -93,7 +94,7 @@ final analysisAspects = <AnalysisAspect>[
   AnalysisAspect(
     name: '開發速度',
     description: '開發效率與時間成本',
-    pageBuilder: null, // TODO: 待實作
+    pageBuilder: (_) => const DevelopmentSpeedPage(),
     icon: Icons.timer,
     color: Colors.red,
   ),

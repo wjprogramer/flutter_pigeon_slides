@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pigeon_slides/theme/theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
@@ -14,7 +15,6 @@ class ReadablePage extends StatefulWidget {
 
 class _ReadablePageState extends State<ReadablePage> {
   WebViewController? _controller;
-  String _status = '載入中...';
   late final bool _webviewSupported;
   static const _fallbackHtml = '''
 <html>
@@ -81,13 +81,11 @@ class _ReadablePageState extends State<ReadablePage> {
         ..setNavigationDelegate(
           NavigationDelegate(
             onPageFinished: (_) async {
-              setState(() => _status = '載入完成');
               await _highlightAndScroll();
             },
             onWebResourceError: (error) {
               debugPrint(error.description);
               _controller?.loadHtmlString(_fallbackHtml);
-              setState(() => _status = '載入失敗，已顯示離線備份');
             },
           ),
         )
@@ -96,8 +94,6 @@ class _ReadablePageState extends State<ReadablePage> {
       if (WebViewPlatform.instance is AndroidWebViewPlatform) {
         AndroidWebViewController.enableDebugging(true);
       }
-    } else {
-      _status = '';
     }
   }
 
@@ -107,46 +103,115 @@ class _ReadablePageState extends State<ReadablePage> {
     super.dispose();
   }
 
+  Future<void> _openUrl() async {
+    final uri = Uri.parse(_docUrl);
+    try {
+      // 先嘗試使用 externalApplication，如果失敗則嘗試 platformDefault
+      if (await canLaunchUrl(uri)) {
+        final launched = await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
+        if (!launched) {
+          // 如果 externalApplication 失敗，嘗試 platformDefault
+          await launchUrl(uri, mode: LaunchMode.platformDefault);
+        }
+      } else {
+        // 如果 canLaunchUrl 返回 false，直接嘗試 launchUrl
+        await launchUrl(uri, mode: LaunchMode.platformDefault);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('無法打開連結: $e'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('可讀性 Readable')),
-      body: ListView(
+      appBar: AppBar(
+        title: const Text('可讀性 Readable'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.open_in_new),
+            tooltip: '在瀏覽器中打開',
+            onPressed: _openUrl,
+          ),
+        ],
+      ),
+      body: Column(
         children: [
-          Text.rich(
-            TextSpan(
-              text:
-                  'Using this package eliminates the need to match strings between host and client for the names and data types of messages. '
-                  'It supports nested classes, grouping messages into APIs, generation of asynchronous wrapper code, and sending messages in either direction. '
-                  '',
-              children: [
-                TextSpan(
-                  text: 'The generated code is readable ',
-                  style: TextStyle(color: MyColors.highlight),
-                ),
-                const TextSpan(
-                  text:
-                      'and guarantees there are no conflicts between multiple clients of different versions.',
-                ),
-              ],
+          // 上半部分：文字內容（可滾動）
+          Expanded(
+            flex: 0,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      text:
+                          'Using this package eliminates the need to match strings between host and client for the names and data types of messages. '
+                          'It supports nested classes, grouping messages into APIs, generation of asynchronous wrapper code, and sending messages in either direction. '
+                          '',
+                      children: [
+                        TextSpan(
+                          text: 'The generated code is readable ',
+                          style: TextStyle(color: MyColors.highlight),
+                        ),
+                        const TextSpan(
+                          text:
+                              'and guarantees there are no conflicts between multiple clients of different versions.',
+                        ),
+                      ],
+                    ),
+                    style: const TextStyle(fontSize: 16, height: 1.5),
+                  ),
+                  const SizedBox(height: 16),
+                  const Divider(),
+                  const SizedBox(height: 8),
+                  const Text(
+                    '官方文件片段（內嵌 WebView）',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          const Divider(),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text('官方文件片段（內嵌 WebView）'),
-          ),
-          if (_webviewSupported && _controller != null) ...[
-            if (_status.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(_status, style: const TextStyle(color: Colors.grey)),
+          // 下半部分：WebView（獨立滾動）
+          if (_webviewSupported && _controller != null)
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: WebViewWidget(controller: _controller!),
               ),
-            SizedBox(height: 660, child: WebViewWidget(controller: _controller!)),
-          ] else
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text('此平台不支援 WebView，或 WebView 載入失敗。'),
+            )
+          else
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(
+                  child: Text(
+                    '此平台不支援 WebView，或 WebView 載入失敗。',
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                ),
+              ),
             ),
         ],
       ),
